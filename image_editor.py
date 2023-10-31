@@ -19,55 +19,90 @@ root.title('Image Editor')
 root.geometry('1080x810')
 root.resizable(False, False)
 
+def buttons_placement_field(main):
+    backgr = 'green'
+    filling = 'both'
+    exp = True
+    def f(x_, y_, width_, height_):  # 
+        field = tk.Frame(master=main, background=backgr)
+        field.pack(expand=exp, fill=filling)
+        field.place(x=x_,y=y_, width=width_, height=height_)
+        return field
+    return f
+
+def buttons(main):
+    backgr = 'dark green'
+    exp=False
+    filling ='none'
+    side_= 'left'
+    def f(x_:int, y_:int, width_:int, txt:str):
+        button = tk.Button(master=main, text=txt, background=backgr)
+        button.pack(expand=exp, fill=filling, side=side_)
+        button.place(x=x_, y=y_, width=width_)
+        return button
+    return f
+
+# buttons place
+button_field = buttons_placement_field(root)
+
 # top buttons place
-top_button_field = tk.Frame(root, background='green')  # , text= 'buttons'
-top_button_field.pack(expand=True, fill='both')
-top_button_field.place(x=30, y=19, width=1010, height=40)
+top_button_field = button_field(x_=30, y_=19, width_=1010, height_=40)
 
 # top buttons
-file = tk.Button(top_button_field, text='File', background='dark green')
-file.pack(expand=False, fill='none', side='left')
-file.place(x=10, y=6, width=100)
+top_buttons = buttons(top_button_field)
+file = top_buttons(x_=10, y_=6, width_=100, txt='File')
+edit = top_buttons(x_=120, y_=6, width_=100, txt='Edit')
+colors = top_buttons(x_=230, y_=6, width_=100, txt='Colors')
+filters = top_buttons(x_=340, y_=6, width_=100, txt='Filters')
 
-edit = tk.Button(top_button_field, text='Edit', background='dark green')
-edit.pack(expand=False, fill='none', side='left')
-edit.place(x=120, y=6, width=100)
+# file buttons place
+file_button_field = button_field(x_=40, y_=60, width_=100, height_=135)
 
-colors = tk.Button(top_button_field, text='Colors', background='dark green')
-colors.pack(expand=False, fill='none', side='left')
-colors.place(x=230, y=6, width=100)
+# file buttons
+file_buttons = buttons(file_button_field)
+file_open = file_buttons(x_=6, y_=10, width_=85, txt='Open file')
+file_open_url = file_buttons(x_=6, y_=40, width_=85, txt='Open url')
+file_save = file_buttons(x_=6, y_=70, width_=85, txt='Save')
+file_save_as = file_buttons(x_=6, y_=100, width_=85, txt='Save as')
 
-filters = tk.Button(top_button_field, text='Filters', background='dark green')
-filters.pack(expand=False, fill='none', side='left')
-filters.place(x=340, y=6, width=100)
+# edit buttons place
+edit_button_field = button_field(x_=150, y_=60, width_=100, height_=135)
 
+# edit buttons
+edit_buttons = buttons(edit_button_field)
+edit_crop = edit_buttons(x_=6, y_=10, width_=85, txt='Crop image')
+edit_flip = edit_buttons(x_=6, y_=40, width_=85, txt='Flip image')
+edit_rotate = edit_buttons(x_=6, y_=70, width_=85, txt='Rotate')
+edit_resize = edit_buttons(x_=6, y_=100, width_=85, txt='Resize')
 
-#side buttons place
-side_button_field = tk.Frame(root, background='green')  # , text= 'buttons'
-side_button_field.pack(expand=True, fill='both')
-side_button_field.place(x=40, y=60, width=100, height=150)
+# color buttons place
+color_button_field = button_field(x_=260, y_=60, width_=100, height_=195)
 
-# side buttons
-file_open = tk.Button(side_button_field, text= 'Open file', background='dark green')
-file_open.pack(expand=False, fill='none')
-file_open.place(x=6, y=10, width=85)
+# color buttons
+color_buttons = buttons(color_button_field)
+color_balance = color_buttons(x_=6, y_=10, width_=85, txt='Color Balance')
+color_contrast = color_buttons(x_=6, y_=40, width_=85, txt='Contrast')
+color_COL_to_BW = color_buttons(x_=6, y_=70, width_=85, txt='Destaturate')
+color_brightness = color_buttons(x_=6, y_=100, width_=85, txt='Brightness')
+color_sharpness = color_buttons(x_=6, y_=130, width_=85, txt='Sharpness')
+color_noise = color_buttons(x_=6, y_=160, width_=85, txt='Color Noise')
 
-file_open_url = tk.Button(side_button_field, text= 'Open url', background='dark green')
-file_open_url.pack(expand=False, fill='none')
-file_open_url.place(x=6, y=40, width=85)
+# filter buttons place
+filter_button_field = button_field(x_=370, y_=60, width_=100, height_=195)
 
-file_save = tk.Button(side_button_field, text= 'Save', background='dark green')
-file_save.pack(expand=False, fill='none')
-file_save.place(x=6, y=70, width=85)
-
-file_save_as = tk.Button(side_button_field, text= 'Save as', background='dark green')
-file_save_as.pack(expand=False, fill='none')
-file_save_as.place(x=6, y=100, width=85)
+# filter buttons
+filter_buttons = buttons(filter_button_field)
+filter_blur = filter_buttons(x_=6, y_=10, width_=85, txt='Blur')
+filter_contour = filter_buttons(x_=6, y_=40, width_=85, txt='Contour')
+filter_edge_enhance = filter_buttons(x_=6, y_=70, width_=85, txt='Edge Enhance')
+filter_emboss = filter_buttons(x_=6, y_=100, width_=85, txt='Emboss')
+filter_unsharp = filter_buttons(x_=6, y_=130, width_=85, txt='Unsharp')
+filter_smooth = filter_buttons(x_=6, y_=160, width_=85, txt='Smooth')
 
 # image
-image_field = tk.Frame(root, background='red')  # , text='image'
-image_field.pack(expand=True, fill='both')
-image_field.place(relx=0.217, rely=0.1, relwidth=0.75, relheight=0.6)
+# image_field = tk.Frame(root, background='red')  # , text='image'
+# image_field.pack(expand=True, fill='both')
+# image_field.place(relx=0.217, rely=0.1, relwidth=0.75, relheight=0.6)
 
 # sliders
 sliders_field = tk.Frame(root, background='yellow')  # , text='sliders'
