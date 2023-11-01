@@ -2,6 +2,7 @@ import os
 import tkinter as tk
 
 import PIL
+from PIL import Image, ImageTk
 
 '''
 the gui:
@@ -18,6 +19,7 @@ root = tk.Tk()
 root.title('Image Editor')
 root.geometry('1080x810')
 root.resizable(False, False)
+p = []
 
 def buttons_placement_field(main):
     backgr = 'green'
@@ -45,6 +47,18 @@ def buttons(main):
 def fake():
     pass
 
+def image_open():
+    p = []
+    im_name = 'PTModelSprite_ID106841.png'
+    directories = ['c:\\', 'd:\\']
+    for directory in directories:
+        for r, d, files in os.walk(directory):
+            for f in files:
+                if f == im_name:
+                    p.append(os.path.join(r, f))
+                    break
+    root.focus()
+
 def file_buttons():
     # file buttons place
     file_button_field = button_field(x_=40, y_=60, width_=100, height_=135)
@@ -53,7 +67,7 @@ def file_buttons():
     f_buttons = buttons(file_button_field)
     f_buttons(
         x_=6, y_=10, width_=85, txt='Open file', 
-        comm=lambda: [fake(), file_button_field.destroy()])  # file_open = 
+        comm=lambda: [image_open(), file_button_field.destroy()])  # file_open = 
     f_buttons(
         x_=6, y_=40, width_=85,txt='Open url', 
         comm=lambda: [fake(), file_button_field.destroy()])  # file_open_url = 
@@ -148,9 +162,12 @@ colors = top_buttons(x_=230, y_=6, width_=100, txt='Colors', comm=color_buttons)
 filters = top_buttons(x_=340, y_=6, width_=100, txt='Filters', comm=filter_buttons)
 
 # image
-image_field = tk.Frame(root, background='red')  # , text='image'
-image_field.pack(expand=True, fill='both')
-image_field.place(relx=0.217, rely=0.1, relwidth=0.75, relheight=0.6)
+# with Image.open(p) as img:
+
+# image = ImageTk.PhotoImage(Image.open(p))  # , text='image'
+# image_field = tk.Frame(root, image_field=image)
+# image_field.pack(expand=True, fill='both')
+# image_field.place(relx=0.217, rely=0.1)
 
 # # sliders
 # sliders_field = tk.Frame(root, background='yellow')  # , text='sliders'
