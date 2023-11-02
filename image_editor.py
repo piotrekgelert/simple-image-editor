@@ -62,12 +62,26 @@ class MainApp(tk.Tk):
         pass
 
     def image_open(self):
+
+        '''
+        find all paths to images on hard drive,
+        add them to selection window,
+        select image to display,
+        push button to display image
+        '''
+        ftypes = [('Python files', '*.py'), ('All files', '*')]
         p = 'd:\\frankenstein_s escape\\effects\\PTModelSprite_ID106841.png'
+        file_path = filedialog.askopenfile(defaultextension='.jpg')
+        # self.image.open(file_path)
+        # print(file_path)
         self.image = ImageTk.PhotoImage(Image.open(p))
         self.display_image(self.image)
     
-    def image_open_url(self):
-        link = 'https://img2.joyreactor.com/pics/post/funny-pictures-dog-fluffy-6466914.jpeg'
+    def url_link(self):
+        OpenUrlImage(self.image_open_url)
+    
+    def image_open_url(self, link):
+        # link = 'https://img2.joyreactor.com/pics/post/funny-pictures-dog-fluffy-6466914.jpeg'
         conn = urllib.request.urlopen(link)
         self.image = ImageTk.PhotoImage(Image.open(conn))
         self.display_image(self.image)
@@ -180,13 +194,13 @@ class MainApp(tk.Tk):
             comm=lambda: [self.image_open(), self.file_button_field.destroy()])  # file_open = 
         f_buttons(
             x_=6, y_=40, width_=85,txt='Open url', 
-            comm=lambda: [self.image_open_url(), self.file_button_field.destroy()])  # file_open_url = 
+            comm=lambda: [self.url_link(), self.file_button_field.destroy()])  # file_open_url = 
         f_buttons(
             x_=6, y_=70, width_=85, txt='Save', 
             comm=lambda: [self.fake(), self.file_button_field.destroy()])  # file_save = 
         f_buttons(
             x_=6, y_=100, width_=85, txt='Save as', 
-            comm=lambda: [self.set_image_name(), self.file_button_field.destroy()])  # file_save_as = 
+            comm=lambda: [self.save_image_as(), self.file_button_field.destroy()])  # file_save_as = 
 
     def edit_buttons(self):
         # edit buttons place
@@ -261,7 +275,7 @@ class MainApp(tk.Tk):
             x_=6, y_=160, width_=85, txt='Smooth', 
             comm=lambda: [self.fake(), self.filter_button_field.destroy()])  # filter_smooth = 
     
-    def set_image_name(self):
+    def save_image_as(self):
         file_save = filedialog.asksaveasfile(defaultextension='.jpg')
         self.image.save(file_save)
         # SaveAs(self.save_name)
@@ -299,43 +313,74 @@ class MainApp(tk.Tk):
         return fjp
 
 
-
-class SaveAs:
+class OpenUrlImage:
     def __init__(self, update):
         top = tk.Toplevel()
-        top.title('Save as')
-        top.geometry('400x200')
+        top.title('Open image from url')
+        top.geometry('400x100')
         self.update = update
-        
-        sframe = tk.Frame(top)  # , background='brown'
-        sframe.pack(expand=True, fill='both')
-        sframe.place(relx=0.03, rely=0.1, relwidth=0.92, relheight=0.85)
 
-        slabel_txt = '''If textfield will be empty saved file
-        will be named: "image1, image2, ..."'''
-        slabel = tk.Label(sframe, text=slabel_txt, font=('arial', 12))
-        slabel.pack()
-        slabel.place(relx=0.03, rely=0.1, relwidth=0.9, relheight=0.3)
+        # uframe = tk.Frame(top)  # , background='brown'
+        # uframe.pack(expand=True, fill='both')
+        # uframe.place(relx=0.03, rely=0.1, relwidth=0.92, relheight=0.85)
+
+        ulabel = tk.Label(top, text='url link:', font=('arial', 12))
+        ulabel.pack()
+        ulabel.place(x=10, y=5)  # , width=370, height=0.3
 
         self.textfield = tk.Entry(
-            sframe, font=('arial', 12)
+            top, font=('arial', 12)
         )
         self.textfield.pack(expand=True, fill='x')
-        self.textfield.place(
-            relx=0.03, rely=0.56, relwidth=0.8, relheight=0.2
-            )
+        self.textfield.place(x=10, y=26, width=350, height=25)
         self.textfield.focus()
 
         button = tk.Button(
-            sframe, text='Save file',
+            top, text='Apply link',
             command=lambda: [self.submit(), top.destroy()]
         )
         button.pack()
-        button.place(relx=0.25, rely=0.85, relwidth=0.55, relheight=0.15)
-
+        button.place(x=10, y=60, width=100, height=30)
 
     def submit(self):
         self.update(self.textfield.get())
+
+# class SaveAs:
+#     def __init__(self, update):
+#         top = tk.Toplevel()
+#         top.title('Save as')
+#         top.geometry('400x200')
+#         self.update = update
+        
+#         sframe = tk.Frame(top)  # , background='brown'
+#         sframe.pack(expand=True, fill='both')
+#         sframe.place(relx=0.03, rely=0.1, relwidth=0.92, relheight=0.85)
+
+#         slabel_txt = '''If textfield will be empty saved file
+#         will be named: "image1, image2, ..."'''
+#         slabel = tk.Label(sframe, text=slabel_txt, font=('arial', 12))
+#         slabel.pack()
+#         slabel.place(relx=0.03, rely=0.1, relwidth=0.9, relheight=0.3)
+
+#         self.textfield = tk.Entry(
+#             sframe, font=('arial', 12)
+#         )
+#         self.textfield.pack(expand=True, fill='x')
+#         self.textfield.place(
+#             relx=0.03, rely=0.56, relwidth=0.8, relheight=0.2
+#             )
+#         self.textfield.focus()
+
+#         button = tk.Button(
+#             sframe, text='Save file',
+#             command=lambda: [self.submit(), top.destroy()]
+#         )
+#         button.pack()
+#         button.place(relx=0.25, rely=0.85, relwidth=0.55, relheight=0.15)
+
+
+#     def submit(self):
+#         self.update(self.textfield.get())
     
 
 
