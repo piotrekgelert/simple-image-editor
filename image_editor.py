@@ -61,6 +61,9 @@ class MainApp(tk.Tk):
     def fake(self):
         pass
 
+    def image_path(self):
+        OpenPathImage(self.image_open)
+    
     def image_open(self):
 
         '''
@@ -191,7 +194,7 @@ class MainApp(tk.Tk):
         f_buttons = self.buttons(self.file_button_field)
         f_buttons(
             x_=6, y_=10, width_=85, txt='Open file', 
-            comm=lambda: [self.image_open(), self.file_button_field.destroy()])  # file_open = 
+            comm=lambda: [self.image_path(), self.file_button_field.destroy()])  # file_open = 
         f_buttons(
             x_=6, y_=40, width_=85,txt='Open url', 
             comm=lambda: [self.url_link(), self.file_button_field.destroy()])  # file_open_url = 
@@ -311,6 +314,35 @@ class MainApp(tk.Tk):
                 if f.endswith('.jpg'):
                     fjp.append(f)
         return fjp
+
+
+class OpenPathImage:
+    def __init__(self, update):
+        top = tk.Toplevel()
+        top.title('Open image from path')
+        top.geometry('400x400')
+        self.update = update
+
+        llabel = tk.Label(
+            top, 
+            text='Paths to images (search on all avaible hard drives):')
+        llabel.pack()
+        llabel.place(x= 10, y=5)
+
+        self.imbox = tk.Listbox(top)
+        self.imbox.pack()
+        self.imbox.place(x=10, y=25, width=380, height=300)
+
+        imbutton = tk.Button(top, text='Load selected image path',
+                             command=lambda:[top.destroy()])
+        imbutton.pack()
+        imbutton.place(x=10, y=350, width=200, height=30)
+
+        avaible_hard_drives = [f'{chr(x)}' for x in range(61, 91)\
+                               if os.path.exists(f'{chr(x)}')]
+        
+
+
 
 
 class OpenUrlImage:
