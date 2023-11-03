@@ -3,6 +3,7 @@ import io
 import os
 import tkinter as tk
 import urllib
+from concurrent.futures import ThreadPoolExecutor
 from tkinter import filedialog
 
 import PIL
@@ -64,7 +65,7 @@ class MainApp(tk.Tk):
     def image_path(self):
         OpenPathImage(self.image_open)
     
-    def image_open(self):
+    def image_open(self, file_path):
 
         '''
         find all paths to images on hard drive,
@@ -72,12 +73,11 @@ class MainApp(tk.Tk):
         select image to display,
         push button to display image
         '''
-        ftypes = [('Python files', '*.py'), ('All files', '*')]
-        p = 'd:\\frankenstein_s escape\\effects\\PTModelSprite_ID106841.png'
-        file_path = filedialog.askopenfile(defaultextension='.jpg')
+        # ftypes = [('Python files', '*.py'), ('All files', '*')]
+        # p = 'd:\\frankenstein_s escape\\effects\\PTModelSprite_ID106841.png'
         # self.image.open(file_path)
         # print(file_path)
-        self.image = ImageTk.PhotoImage(Image.open(p))
+        self.image = ImageTk.PhotoImage(Image.open(file_path))
         self.display_image(self.image)
     
     def url_link(self):
@@ -320,7 +320,7 @@ class OpenPathImage:
     def __init__(self, update):
         top = tk.Toplevel()
         top.title('Open image from path')
-        top.geometry('400x400')
+        top.geometry('600x800')
         self.update = update
 
         llabel = tk.Label(
@@ -331,16 +331,36 @@ class OpenPathImage:
 
         self.imbox = tk.Listbox(top)
         self.imbox.pack()
-        self.imbox.place(x=10, y=25, width=380, height=300)
+        self.imbox.place(x=10, y=25, width=580, height=700)
 
         imbutton = tk.Button(top, text='Load selected image path',
-                             command=lambda:[top.destroy()])
+                             command=lambda:[self.submit(), top.destroy()])
         imbutton.pack()
-        imbutton.place(x=10, y=350, width=200, height=30)
+        imbutton.place(x=10, y=750, width=200, height=30)
 
-        avaible_hard_drives = [f'{chr(x)}' for x in range(61, 91)\
-                               if os.path.exists(f'{chr(x)}')]
+        # avaible_hard_drives = [f'{chr(x)}:\\' for x in range(61, 91)\
+        #                        if os.path.exists(f'{chr(x)}')]
+        # processors_num = os.cpu_count()
+        # with ThreadPoolExecutor(max_workers=processors_num) as proc:
+        #     self.im_files = proc.map(self.find_images(avaible_hard_drives))
         
+        self.im_files = self.find_images(['D:\\'])  # avaible_hard_drives ['C:\\']
+        for x in self.im_files:
+            self.imbox.insert(tk.END, x)        
+
+    
+    def find_images(self, im_drives):
+        f_im = []
+        for drive in im_drives:
+            for r, d, files in os.walk(drive):
+                for fl in files:
+                    if fl.endswith('.jpg'):  #  or fl.endswith('.png')
+                        f_im.append(f'{r}\\\{fl}')
+        return f_im
+    
+    def submit(self):
+        img_idx = self.imbox.curselection()[0]
+        self.update(self.im_files[img_idx])
 
 
 
