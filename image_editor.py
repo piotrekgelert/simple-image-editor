@@ -63,7 +63,8 @@ class MainApp(tk.Tk):
         pass
 
     def image_path(self):
-        OpenPathImage(self.image_open)
+        OpenImageSelector(self.image_open)
+        # OpenPathImage(self.image_open)
     
     def image_open(self, file_path):
 
@@ -307,21 +308,76 @@ class MainApp(tk.Tk):
 
         # print(fullpath)
     
-    def find_jpeg(self, fp):
-        fjp = []
-        for r, d, files in os.walk(fp):
-            for f in files:
-                if f.endswith('.jpg'):
-                    fjp.append(f)
-        return fjp
+    # def find_jpeg(self, fp):
+    #     fjp = []
+    #     for r, d, files in os.walk(fp):
+    #         for f in files:
+    #             if f.endswith('.jpg'):
+    #                 fjp.append(f)
+    #     return fjp
+
+class OpenImageSelector:
+    def __init__(self , update_a, update_b= None):  #
+        top = tk.Toplevel()
+        top.title('Select method to open the image')
+        top.geometry('400x250')
+        self.update_a = update_a
+        self.update_b = update_b
+        drives = [f'{chr(x)}' for x in range(61, 91) if os.path.exists(f'{chr(x)}:\\')]
+        # print(drives)
+        drives_label_txt = '''Choose one or more hard drives from available list: {}
+        (more drives, longer search for images), 
+        >> insert example: c, d, e <<'''
+        drives_label = tk.Label(
+            top,
+            text=drives_label_txt.format(drives))
+        drives_label.pack()
+        drives_label.place(x=20, y=3)
+
+        self.drives_text_field = tk.Entry(top)
+        self.drives_text_field.pack()
+        self.drives_text_field.place(x=20, y=60, height=25, width=360)
+
+        drives_button = tk.Button(
+            top,
+            text='Submit hard drive(s)',
+            command=lambda: [self.submit_drive() , top.destroy()])
+        drives_button.pack()
+        drives_button.place(x=20, y=90)
+
+        folder_label = tk.Label(
+            top,
+            text='Insert link to the chosen folder with images')
+        folder_label.pack()
+        folder_label.place(x=20 , y=140)
+
+        self.folder_field = tk.Entry(top)
+        self.folder_field.pack()
+        self.folder_field.place(x=20, y=160, height=25, width=360)
+
+        folder_button = tk.Button(
+            top,
+            text= 'Submit path to the folder',
+            command=lambda: [self.submit_folder(), top.destroy()]  # , self.open_image_path()
+        )
+        folder_button.pack()
+        folder_button.place(x=20, y=190)
+    
+    def submit_folder(self):
+        OpenPathImage(self.update_a, self.folder_field.get())
+        # self.update(self.folder_field)
+    
+    def submit_drive(self):
+        OpenPathImage(self.update_a, self.drives_text_field.get())
 
 
 class OpenPathImage:
-    def __init__(self, update):
+    def __init__(self, update_a, update_b):
         top = tk.Toplevel()
         top.title('Open image from path')
         top.geometry('600x800')
-        self.update = update
+        self.update_a = update_a
+        self.update_b = update_b
 
         llabel = tk.Label(
             top, 
@@ -344,10 +400,19 @@ class OpenPathImage:
         # with ThreadPoolExecutor(max_workers=processors_num) as proc:
         #     self.im_files = proc.map(self.find_images(avaible_hard_drives))
         
-        self.im_files = self.find_images(['D:\\'])  # avaible_hard_drives ['C:\\']
+        # print(self.update_b)
+        imgs_path = r'D:\My Designs\1A Games\ZombiePunisherData\ZombiePunisher_zombieShooterProject\zombieEnvirontments blend files\lavaVolcanoLevel'
+        if '\\' in self.update_b:
+            self.im_files = self.find_images([self.update_b])  # avaible_hard_drives ['C:\\']['D:\\']
+        else:
+            res=[f'{x.upper()}:\\' for x in self.update_b.split(',')]
+            print(res)
+            self.im_files = self.find_images(res)
         for x in self.im_files:
             self.imbox.insert(tk.END, x)        
 
+    def select_images(self):
+        pass
     
     def find_images(self, im_drives):
         f_im = []
@@ -360,9 +425,7 @@ class OpenPathImage:
     
     def submit(self):
         img_idx = self.imbox.curselection()[0]
-        self.update(self.im_files[img_idx])
-
-
+        self.update_a(self.im_files[img_idx])
 
 
 class OpenUrlImage:
