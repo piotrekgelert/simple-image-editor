@@ -476,36 +476,63 @@ class OpenUrlImage:
     def __init__(self, update):
         top = tk.Toplevel()
         top.title('Open image from url')
-        top.geometry('400x100')
+        top.geometry('400x300')
         self.update = update
 
         # uframe = tk.Frame(top)  # , background='brown'
         # uframe.pack(expand=True, fill='both')
         # uframe.place(relx=0.03, rely=0.1, relwidth=0.92, relheight=0.85)
 
-        ulabel = tk.Label(top, text='url link:', font=('arial', 12))
+        ulabel = tk.Label(top, text='Insert link url:')  # , font=('arial', 12)
         ulabel.pack()
         ulabel.place(x=10, y=5)  # , width=370, height=0.3
 
-        self.textfield = tk.Entry(
-            top, font=('arial', 12)
-        )
+        self.textfield = tk.Entry(top)  # , font=('arial', 12)
         self.textfield.pack(expand=True, fill='x')
-        self.textfield.place(x=10, y=26, width=350, height=25)
+        self.textfield.place(x=10, y=26, width=350, height=25)  # 
         self.textfield.focus()
 
         button = tk.Button(
-            top, text='Apply link',
+            top, text='Open link',
             command=lambda: [self.submit(), top.destroy()]
         )
         button.pack()
         button.place(x=10, y=60, width=100, height=30)
 
+        recent_label = tk.Label(top, text='Recent url links:')
+        recent_label.pack()
+        recent_label.place(x=10, y=110)
+
+        self.recent_field = tk.Listbox(top)
+        self.recent_field.pack()
+        self.recent_field.place(x=10, y=130, width=350, height=120)
+
+        self.recent_ls = []
+        with open('recent_url_paths.txt', 'r') as f:
+            for file in f.readlines():
+                self.recent_field.insert(tk.END, file[:-1])
+                self.recent_ls.insert(0, file[:-1])
+
+        recent_button = tk.Button(
+            top,
+            text='Open selected link',
+            command=lambda:[self.submit_recent(), top.destroy()])
+        recent_button.pack()
+        recent_button.place(x=10, y=260)
+
     def submit(self):
+        '''
+        !! overwrites txt file -> first line !!
+        '''
         path_a = self.textfield.get()
         with open('recent_url_paths.txt', 'w') as f:
             f.write(path_a + '\n')
         self.update(path_a)
+    
+    def submit_recent(self):
+        recent_url = self.recent_field.curselection()[0]
+        print(self.recent_ls[recent_url])
+        self.update(self.recent_ls[recent_url])
 
 # class SaveAs:
 #     def __init__(self, update):
