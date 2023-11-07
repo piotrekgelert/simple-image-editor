@@ -28,7 +28,7 @@ class MainApp(tk.Tk):
         self.title('Image Editor')
         self.geometry('1080x810')
         self.resizable(False, False)
-        self.path_ = []
+        self.dims_ = []
         self.recent_paths_saver()
         self.widgets()
 
@@ -90,8 +90,11 @@ class MainApp(tk.Tk):
         # p = 'd:\\frankenstein_s escape\\effects\\PTModelSprite_ID106841.png'
         # self.image.open(file_path)
         # print(file_path)
-        self.image = ImageTk.PhotoImage(Image.open(file_path))
-        self.display_image(self.image)
+        self.image = (Image.open(file_path))
+        # self.tk_image = ImageTk.PhotoImage(self.image)
+        self.dims_.clear()
+        self.dims_.append((self.image.height, self.image.width))
+        self.display_image(self.image)  # self.tk_image
     
     def url_link(self):
         OpenUrlImage(self.image_open_url)
@@ -99,39 +102,39 @@ class MainApp(tk.Tk):
     def image_open_url(self, link):
         # link = 'https://img2.joyreactor.com/pics/post/funny-pictures-dog-fluffy-6466914.jpeg'
         conn = urllib.request.urlopen(link)
-        self.image = ImageTk.PhotoImage(Image.open(conn))
-        self.display_image(self.image)
-
         
-        # return image_field
-        
-        # p = []
-        # im_name = 'PTModelSprite_ID106841.png'
-        # directories = ['c:\\', 'd:\\']
-        # for directory in directories:
-        #     for r, d, files in os.walk(directory):
-        #         for f in files:
-        #             if f == im_name:
-        #                 print(os.path.join(r, f))
-        #                 # p.append(os.path.join(r, f))
-        #                 break
-
-        # img.show()
+        self.image = Image.open(conn)
+        self.dims_.clear()
+        self.dims_.append((self.image.height, self.image.width))
+        self.display_image(self.image)  # self.tk_image
         
     
     def display_image(self, img):
+        im = ImageTk.PhotoImage(img)
         image_field = tk.Label(self)  # , background='red'
         image_field.pack(expand=True, fill='both')
         image_field.place(x=30, y=65, width=1010, height=700)
-        # disp_img = ImageTk.PhotoImage(img)
-        image_field.configure(image=img)
-        image_field.image = img
+        image_field.configure(image=im)
+        image_field.image = im
 
-        # # image = ImageTk.PhotoImage(Image.open(p))  # , text='image'
-        # # image_field = tk.Frame(root, image_field=image)
-        # # image_field.pack(expand=True, fill='both')
-        # # image_field.place(relx=0.217, rely=0.1)
-
+    def image_crop(self):
+        CropImage(self.crop_image)
+    
+    def crop_image(self, update):
+        im_copy = self.image.copy()
+        cancel, left, upper, right, lower = update
+        print(update)
+        if cancel:
+            self.image = im_copy
+            self.display_image(self.image)
+        else:
+            print(self.image.height, self.image.width)
+            img = self.image.crop((left, upper, right, lower))
+            # self.dims_.clear()
+            # self.dims_.append((self.image.height, self.image.width))
+            print(img.height, img.width)
+            self.display_image(img)
+        
 
     
     def widgets(self):
@@ -227,7 +230,7 @@ class MainApp(tk.Tk):
         e_buttons = self.buttons(mstr=self.edit_button_field)
         e_buttons(
             x_=6, y_=10, width_=85, txt='Crop image', 
-            comm=lambda: [self.fake(), self.edit_button_field.destroy()])  # edit_crop = 
+            comm=lambda: [self.image_crop(), self.edit_button_field.destroy()])  # edit_crop = 
         e_buttons(
             x_=6, y_=40, width_=85, txt='Flip image', 
             comm=lambda: [self.fake(), self.edit_button_field.destroy()])  # edit_flip = 
@@ -399,13 +402,13 @@ class OpenImageSelector:
 
     def submit_folder(self):
         path_folder = self.folder_field.get()
-        with open('recent_comp_paths.txt', 'a') as f:
+        with open('recent_comp_paths.txt', 'w') as f:
             f.write(path_folder)  #  + '\n'
         OpenPathImage(self.update_a, path_folder)
     
     def submit_drive(self):
         path_drive = self.drives_field.get()
-        with open('recent_comp_paths.txt', 'a') as f:
+        with open('recent_comp_paths.txt', 'w') as f:
             f.write(path_drive)  #  + '\n'
         OpenPathImage(self.update_a, path_drive)
     
@@ -538,6 +541,100 @@ class CropImage:
         top.title()
         top.geometry('400x400')
         self.update = update
+
+        left_txt = tk.Label(top,text='Crop left:')
+        left_txt.pack()
+        left_txt.place(x=10, y=30)
+        self.left_input = tk.Entry(top)
+        self.left_input.pack()
+        self.left_input.place(x=10, y=50, width=150, height=20)
+
+        upper_txt = tk.Label(top,text='Crop upper:')
+        upper_txt.pack()
+        upper_txt.place(x=180, y=30)
+        self.upper_input = tk.Entry(top)
+        self.upper_input.pack()
+        self.upper_input.place(x=180, y=50, width=150, height=20)
+
+        right_txt = tk.Label(top,text='Crop right:')
+        right_txt.pack()
+        right_txt.place(x=10, y=80)
+        self.right_input = tk.Entry(top)
+        self.right_input.pack()
+        self.right_input.place(x=10, y=100, width=150, height=20)
+
+        lower_txt = tk.Label(top,text='Crop right:')
+        lower_txt.pack()
+        lower_txt.place(x=180, y=80)
+        self.lower_input = tk.Entry(top)
+        self.lower_input.pack()
+        self.lower_input.place(x=180, y=100, width=150, height=20)
+
+        apply_button = tk.Button(
+            top, text='Apply changes',
+            command=self.submit_apply
+        )
+        apply_button.pack()
+        apply_button.place(x=10, y=130, width=100)
+        cancel_button = tk.Button(
+            top, text= 'Cancel',
+            command=lambda: [self.submit_cancel(), top.destroy()]
+        )
+        cancel_button.pack()
+        cancel_button.place(x=130, y=130, width=100)
+        exit_button = tk.Button(
+            top, text='Exit',
+            command=lambda:[self.submit_exit(), top.destroy()]
+        )
+        exit_button.pack()
+        exit_button.place(x=260, y=130, width=100)
+    
+    def submit_apply(self):
+        cancel=False
+        new_dimensions = (
+            cancel,
+            int(self.left_input.get()),
+            int(self.upper_input.get()),
+            int(self.right_input.get()),
+            int(self.lower_input.get())
+            )
+        self.update(new_dimensions)
+    
+    def submit_cancel(self):
+        cancel=True
+        new_dimensions = (cancel, 0, 0, 0, 0)
+        self.update(new_dimensions)
+
+    def submit_exit(self):
+        pass
+
+
+class FlipImage:
+    def __init__(self,update):
+        top = tk.Toplevel()
+        top.title('Flip image')
+        top.geometry('400x400')
+        self.update = update
+
+
+class RotateImage:
+    def __init__(self, update):
+        top = tk.Toplevel()
+        top.title('Rotate image')
+        top.geometry('400x400')
+        self.update = update
+
+
+class ResizeImage:
+    def __init__(self, update):
+        top = tk.Toplevel()
+        top.title('Resize image')
+        top.geometry('400x400')
+        self.update = update
+
+        
+
+
 # class SaveAs:
 #     def __init__(self, update):
 #         top = tk.Toplevel()
