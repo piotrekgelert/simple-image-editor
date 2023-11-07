@@ -37,8 +37,8 @@ class MainApp(tk.Tk):
         file_url = 'recent_url_paths.txt'
         if (file_comp and file_url) not in os.listdir():
             f_comp = open(file_comp, 'x')
-            f_url = open(file_url, 'x')
             f_comp.close()
+            f_url = open(file_url, 'x')
             f_url.close()
         else:
             pass
@@ -399,14 +399,14 @@ class OpenImageSelector:
 
     def submit_folder(self):
         path_folder = self.folder_field.get()
-        with open('recent_comp_paths.txt', 'w') as f:
-            f.write(path_folder + '\n')
+        with open('recent_comp_paths.txt', 'a') as f:
+            f.write(path_folder)  #  + '\n'
         OpenPathImage(self.update_a, path_folder)
     
     def submit_drive(self):
         path_drive = self.drives_field.get()
-        with open('recent_comp_paths.txt', 'w') as f:
-            f.write(path_drive + '\n')
+        with open('recent_comp_paths.txt', 'a') as f:
+            f.write(path_drive)  #  + '\n'
         OpenPathImage(self.update_a, path_drive)
     
     def submit_recent(self):
@@ -445,9 +445,8 @@ class OpenPathImage:
         #     self.im_files = proc.map(self.find_images(avaible_hard_drives))
         
         # print(self.update_b)
-        imgs_path = r'D:\frankenstein_s escape\images'
         if '\\' in self.update_b:
-            self.im_files = self.find_images([self.update_b])  # avaible_hard_drives ['C:\\']['D:\\']
+            self.im_files = self.find_images([self.update_b])
         else:
             res=[f'{x.upper()}:\\' for x in self.update_b.split(',')]
             # print(res)
@@ -467,9 +466,10 @@ class OpenPathImage:
     def submit(self):
         img_idx = self.imbox.curselection()[0]
         path_a = self.im_files[img_idx]
-        with open('recent_comp_paths.txt', 'w') as f:
-            f.write(path_a + '\n')
+        with open('recent_comp_paths.txt', 'a') as f:
+            f.write(path_a)  #  + '\n'
         self.update_a(path_a)
+
 
 
 class OpenUrlImage:
@@ -521,19 +521,23 @@ class OpenUrlImage:
         recent_button.place(x=10, y=260)
 
     def submit(self):
-        '''
-        !! overwrites txt file -> first line !!
-        '''
         path_a = self.textfield.get()
-        with open('recent_url_paths.txt', 'w') as f:
-            f.write(path_a + '\n')
+        with open('recent_url_paths.txt', 'a') as f:
+            f.write(path_a)  #  + '\n'
         self.update(path_a)
     
     def submit_recent(self):
         recent_url = self.recent_field.curselection()[0]
-        print(self.recent_ls[recent_url])
-        self.update(self.recent_ls[recent_url])
+        path_a = self.recent_ls[recent_url]
+        self.update(path_a)
 
+
+class CropImage:
+    def __init__(self, update):
+        top = tk.Toplevel()
+        top.title()
+        top.geometry('400x400')
+        self.update = update
 # class SaveAs:
 #     def __init__(self, update):
 #         top = tk.Toplevel()
