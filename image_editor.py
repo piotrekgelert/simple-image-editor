@@ -8,7 +8,7 @@ from tkinter import filedialog
 
 import PIL
 import requests
-from PIL import Image, ImageTk
+from PIL import Image, ImageDraw, ImageTk
 
 '''
 the gui:
@@ -117,6 +117,13 @@ class MainApp(tk.Tk):
         image_field.configure(image=im)
         image_field.image = im
 
+    def display_dimensions(self):
+        DimensionsImage(self.display_dims, self.image)
+    
+    def display_dims(self, update):
+        print(update)
+        # image= self.image
+    
     def image_crop(self):
         CropImage(self.crop_image)
     
@@ -215,8 +222,8 @@ class MainApp(tk.Tk):
             x_=6, y_=40, width_=85,txt='Open url', 
             comm=lambda: [self.url_link(), self.file_button_field.destroy()])  # file_open_url = 
         f_buttons(
-            x_=6, y_=70, width_=85, txt='Save', 
-            comm=lambda: [self.fake(), self.file_button_field.destroy()])  # file_save = 
+            x_=6, y_=70, width_=85, txt='Image dimentions', 
+            comm=lambda: [self.display_dimensions(), self.file_button_field.destroy()])  # file_save = 
         f_buttons(
             x_=6, y_=100, width_=85, txt='Save as', 
             comm=lambda: [self.save_image_as(), self.file_button_field.destroy()])  # file_save_as = 
@@ -417,7 +424,6 @@ class OpenImageSelector:
         OpenPathImage(self.update_a, self.recent_ls[recent_idx])
 
 
-
 class OpenPathImage:
     def __init__(self, update_a, update_b):
         top = tk.Toplevel()
@@ -474,7 +480,6 @@ class OpenPathImage:
         self.update_a(path_a)
 
 
-
 class OpenUrlImage:
     def __init__(self, update):
         top = tk.Toplevel()
@@ -513,8 +518,8 @@ class OpenUrlImage:
         self.recent_ls = []
         with open('recent_url_paths.txt', 'r') as f:
             for file in f.readlines():
-                self.recent_field.insert(tk.END, file[:-1])
-                self.recent_ls.insert(0, file[:-1])
+                self.recent_field.insert(tk.END, file)
+                self.recent_ls.insert(0, file)
 
         recent_button = tk.Button(
             top,
@@ -535,6 +540,43 @@ class OpenUrlImage:
         self.update(path_a)
 
 
+class DimensionsImage:
+    def __init__(self, update, img):  # image
+        top = tk.Toplevel()
+        top.title('Image Dimensions')
+        top.geometry('1080x800')
+        self.update = update
+        # img = image.resize((image.size[0]//2, image.size[1]//2), Image.Resampling.LANCZOS)
+        img_width = img.size[0]
+        img_height = img.size[1]
+        
+        # im = ImageTk.PhotoImage(img)
+        # image_field = tk.Label(top)  # , background='red'
+        # image_field.pack(expand=True, fill='both')
+        # image_field.place(x=30, y=65, width=1010, height=700)
+        # image_field.configure(image=im)
+        # image_field.image = im
+        
+        canvas = tk.Canvas(
+            top,
+            width=img_width,
+            height=img_height)
+        canvas.pack()
+
+        canvas.bind('<Button-1>', self.submit_coords)
+
+        
+        img_tk = ImageTk.PhotoImage(img)
+        ImageDraw(canvas.create_image((img_width//2, img_height//2), image=img_tk))
+        # canvas.pack()
+        # ImageDraw()
+
+        
+    
+    def submit_coords(self, event):
+        self.update((event.x, event.y))
+        
+
 class CropImage:
     def __init__(self, update):
         top = tk.Toplevel()
@@ -542,28 +584,28 @@ class CropImage:
         top.geometry('400x400')
         self.update = update
 
-        left_txt = tk.Label(top,text='Crop left:')
+        left_txt = tk.Label(top,text='Old left edge to the new left:')
         left_txt.pack()
         left_txt.place(x=10, y=30)
         self.left_input = tk.Entry(top)
         self.left_input.pack()
         self.left_input.place(x=10, y=50, width=150, height=20)
 
-        upper_txt = tk.Label(top,text='Crop upper:')
+        upper_txt = tk.Label(top,text='Old top edge to the new top:')
         upper_txt.pack()
         upper_txt.place(x=180, y=30)
         self.upper_input = tk.Entry(top)
         self.upper_input.pack()
         self.upper_input.place(x=180, y=50, width=150, height=20)
 
-        right_txt = tk.Label(top,text='Crop right:')
+        right_txt = tk.Label(top,text='Old left edge to the new right:')
         right_txt.pack()
         right_txt.place(x=10, y=80)
         self.right_input = tk.Entry(top)
         self.right_input.pack()
         self.right_input.place(x=10, y=100, width=150, height=20)
 
-        lower_txt = tk.Label(top,text='Crop right:')
+        lower_txt = tk.Label(top,text='Old top edge to the new bottom:')
         lower_txt.pack()
         lower_txt.place(x=180, y=80)
         self.lower_input = tk.Entry(top)
@@ -588,7 +630,7 @@ class CropImage:
         )
         exit_button.pack()
         exit_button.place(x=260, y=130, width=100)
-    
+
     def submit_apply(self):
         cancel=False
         new_dimensions = (
