@@ -544,37 +544,54 @@ class DimensionsImage:
     def __init__(self, update, img):  # image
         top = tk.Toplevel()
         top.title('Image Dimensions')
-        top.geometry('1080x800')
-        self.update = update
-        # img = image.resize((image.size[0]//2, image.size[1]//2), Image.Resampling.LANCZOS)
+        window_width = 1080
+        window_height = 800
+        top.geometry(f'{window_width}x{window_height}')
         img_width = img.size[0]
         img_height = img.size[1]
+        # top.geometry(f'{img_width}x{img_height}')
+
+        if window_width * img_height < window_height * img_width:
+        # if img_height > window_height or img_width > window_width:
+            # img_width = img_width//2
+            new_img_width = max(1, img_width * window_height // img_height)
+            # with preserving aspect ratio
+            # img_height = img_height//2
+            new_img_height = max(1, img_height * window_width // img_width)
+
+        else:
+            new_img_width = img_width
+            new_img_height = img_height
+
+        self.update = update
+        # img = image.resize((image.size[0]//2, image.size[1]//2), Image.Resampling.LANCZOS)
         
-        # im = ImageTk.PhotoImage(img)
-        # image_field = tk.Label(top)  # , background='red'
-        # image_field.pack(expand=True, fill='both')
-        # image_field.place(x=30, y=65, width=1010, height=700)
-        # image_field.configure(image=im)
-        # image_field.image = im
         
         canvas = tk.Canvas(
             top,
             width=img_width,
-            height=img_height)
-        canvas.pack()
+            height=img_height
 
-        canvas.bind('<Button-1>', self.submit_coords)
+            # width=new_img_width,
+            # height=new_img_height
+            )
+        canvas.pack(expand=1, fill='both')
+        self.lst_coords = []
+        self.lst_coords.append(canvas.bind('<Button-1>', self.gather_coords))
 
-        
         img_tk = ImageTk.PhotoImage(img)
-        ImageDraw(canvas.create_image((img_width//2, img_height//2), image=img_tk))
-        # canvas.pack()
-        # ImageDraw()
+        # canvas.create_image((img_width, img_height), image=img_tk)
+        canvas.create_image((5, 5), image=img_tk, anchor='nw')
 
-        
+        top.mainloop()
     
-    def submit_coords(self, event):
-        self.update((event.x, event.y))
+    def gather_coords(self, event):
+        print(event.x, event.y)
+        return event.x, event.y
+
+    def submit_coords(self):
+        if len(self.lst_coords) == 2:
+            self.update(self.lst_coords)
         
 
 class CropImage:
