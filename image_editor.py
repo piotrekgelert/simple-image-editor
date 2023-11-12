@@ -10,6 +10,8 @@ import PIL
 import requests
 from PIL import Image, ImageDraw, ImageTk
 
+from edit_image import CropImage
+
 '''
 the gui:
 BUTTONS AREA:
@@ -550,122 +552,81 @@ class DimensionsImage:
         img_width = img.size[0]
         img_height = img.size[1]
         # top.geometry(f'{img_width}x{img_height}')
-
-        if window_width * img_height < window_height * img_width:
-        # if img_height > window_height or img_width > window_width:
-            # img_width = img_width//2
-            new_img_width = max(1, img_width * window_height // img_height)
-            # with preserving aspect ratio
-            # img_height = img_height//2
-            new_img_height = max(1, img_height * window_width // img_width)
-
-        else:
-            new_img_width = img_width
-            new_img_height = img_height
-
+        self.top_x = 0
+        self.top_y = 0
+        self.bot_x = 0
+        self.bot_y = 0
         self.update = update
+
+        scroll_bar_right = tk.Scrollbar(top, orient='vertical')
+        scroll_bar_right.pack(side='right', fill='y')
+
+        scroll_bar_bottom = tk.Scrollbar(top, orient='horizontal')
+        scroll_bar_bottom.pack(side='bottom', fill='x')
+
+        # if window_width * img_height < window_height * img_width:
+        # # if img_height > window_height or img_width > window_width:
+        #     # img_width = img_width//2
+        #     new_img_width = max(1, img_width * window_height // img_height)
+        #     # with preserving aspect ratio
+        #     # img_height = img_height//2
+        #     new_img_height = max(1, img_height * window_width // img_width)
+
+        # else:
+        #     new_img_width = img_width
+        #     new_img_height = img_height
+
+        
         # img = image.resize((image.size[0]//2, image.size[1]//2), Image.Resampling.LANCZOS)
         
         
-        canvas = tk.Canvas(
+        self.canvas = tk.Canvas(
             top,
-            width=img_width,
-            height=img_height
-
-            # width=new_img_width,
-            # height=new_img_height
+            width=window_width,  # img_width
+            height=window_height,  # img_height
+            scrollregion=(0,0, img_width, img_height)
             )
-        canvas.pack(expand=1, fill='both')
-        self.lst_coords = []
-        self.lst_coords.append(canvas.bind('<Button-1>', self.gather_coords))
+        self.canvas.pack(expand=1, fill='both')
+        
+        scroll_bar_right.config(command=self.canvas.yview)
+        scroll_bar_bottom.config(command=self.canvas.xview)
 
         img_tk = ImageTk.PhotoImage(img)
-        # canvas.create_image((img_width, img_height), image=img_tk)
-        canvas.create_image((5, 5), image=img_tk, anchor='nw')
+        self.canvas.create_image((5, 5), image=img_tk, anchor=tk.NW)
+
+        self.rect_id = self.canvas.create_rectangle(
+            self.top_x, self.top_y,
+            self.top_x, self.top_y,
+            dash=(2, 2), fill='', outline='white')
+        
+        self.canvas.bind('<Button-1>', self.gather_coords)
+        self.canvas.bind('<B1-Motion>', self.update_coords)
 
         top.mainloop()
     
     def gather_coords(self, event):
         print(event.x, event.y)
-        return event.x, event.y
+        self.top_x = event.x
+        self.top_y = event.y
+        # return event.x, event.y
+    
+    def update_coords(self, event):
+        print(f'updated: {event.x}, {event.y}')
+        self.bot_x = event.x
+        self.bot_y = event.y
+
+        self.canvas.coords(
+            self.rect_id, self.top_x, self.top_y, self.bot_x, self.bot_y)
 
     def submit_coords(self):
-        if len(self.lst_coords) == 2:
-            self.update(self.lst_coords)
-        
-
-class CropImage:
-    def __init__(self, update):
-        top = tk.Toplevel()
-        top.title()
-        top.geometry('400x400')
-        self.update = update
-
-        left_txt = tk.Label(top,text='Old left edge to the new left:')
-        left_txt.pack()
-        left_txt.place(x=10, y=30)
-        self.left_input = tk.Entry(top)
-        self.left_input.pack()
-        self.left_input.place(x=10, y=50, width=150, height=20)
-
-        upper_txt = tk.Label(top,text='Old top edge to the new top:')
-        upper_txt.pack()
-        upper_txt.place(x=180, y=30)
-        self.upper_input = tk.Entry(top)
-        self.upper_input.pack()
-        self.upper_input.place(x=180, y=50, width=150, height=20)
-
-        right_txt = tk.Label(top,text='Old left edge to the new right:')
-        right_txt.pack()
-        right_txt.place(x=10, y=80)
-        self.right_input = tk.Entry(top)
-        self.right_input.pack()
-        self.right_input.place(x=10, y=100, width=150, height=20)
-
-        lower_txt = tk.Label(top,text='Old top edge to the new bottom:')
-        lower_txt.pack()
-        lower_txt.place(x=180, y=80)
-        self.lower_input = tk.Entry(top)
-        self.lower_input.pack()
-        self.lower_input.place(x=180, y=100, width=150, height=20)
-
-        apply_button = tk.Button(
-            top, text='Apply changes',
-            command=self.submit_apply
-        )
-        apply_button.pack()
-        apply_button.place(x=10, y=130, width=100)
-        cancel_button = tk.Button(
-            top, text= 'Cancel',
-            command=lambda: [self.submit_cancel(), top.destroy()]
-        )
-        cancel_button.pack()
-        cancel_button.place(x=130, y=130, width=100)
-        exit_button = tk.Button(
-            top, text='Exit',
-            command=lambda:[self.submit_exit(), top.destroy()]
-        )
-        exit_button.pack()
-        exit_button.place(x=260, y=130, width=100)
-
-    def submit_apply(self):
-        cancel=False
-        new_dimensions = (
-            cancel,
-            int(self.left_input.get()),
-            int(self.upper_input.get()),
-            int(self.right_input.get()),
-            int(self.lower_input.get())
-            )
-        self.update(new_dimensions)
-    
-    def submit_cancel(self):
-        cancel=True
-        new_dimensions = (cancel, 0, 0, 0, 0)
-        self.update(new_dimensions)
-
-    def submit_exit(self):
-        pass
+        lst_coords= []
+        lst_coords.append((self.top_x, self.top_y))
+        ls_bott = []
+        ls_bott.append((self.bot_x, self.bot_y))
+        lst_coords.update(ls_bott[-1])
+        print(lst_coords)
+        # if len(self.lst_coords) == 2:
+        #     self.update(self.lst_coords)
 
 
 class FlipImage:
