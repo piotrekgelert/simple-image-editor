@@ -10,7 +10,7 @@ import PIL
 import requests
 from PIL import Image, ImageDraw, ImageTk
 
-from edit_image import CropImage
+from crop_image import CropImage
 
 '''
 the gui:
