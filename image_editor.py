@@ -119,15 +119,15 @@ class MainApp(tk.Tk):
         image_field.configure(image=im)
         image_field.image = im
 
-    def display_dimensions(self):
-        DimensionsImage(self.display_dims, self.image)
+    # def display_dimensions(self):
+    #     DimensionsImage(self.display_dims, self.image)
     
-    def display_dims(self, update):
-        print(update)
+    # def display_dims(self, update):
+    #     print(update)
         # image= self.image
     
     def image_crop(self):
-        CropImage(self.crop_image)
+        CropImage(self.crop_image, self.image)
     
     def crop_image(self, update):
         im_copy = self.image.copy()
@@ -542,91 +542,98 @@ class OpenUrlImage:
         self.update(path_a)
 
 
-class DimensionsImage:
-    def __init__(self, update, img):  # image
-        top = tk.Toplevel()
-        top.title('Image Dimensions')
-        window_width = 1080
-        window_height = 800
-        top.geometry(f'{window_width}x{window_height}')
-        img_width = img.size[0]
-        img_height = img.size[1]
-        # top.geometry(f'{img_width}x{img_height}')
-        self.top_x = 0
-        self.top_y = 0
-        self.bot_x = 0
-        self.bot_y = 0
-        self.update = update
+# class DimensionsImage:
+#     def __init__(self, update, img):  # image
+#         top = tk.Toplevel()
+#         top.title('Image Dimensions')
+#         img_width = img.size[0]
+#         img_height = img.size[1]
+#         window_width = 1080
+#         window_height = 800
+#         # top.geometry(f'{window_width}x{window_height}')
+#         # top.geometry(f'{window_width}x{window_height}')
+#         img_width = img.size[0]
+#         img_height = img.size[1]
+#         top.geometry(f'{img_width}x{img_height}')
+#         self.top_x = 0
+#         self.top_y = 0
+#         self.bot_x = 0
+#         self.bot_y = 0
+#         self.update = update
 
-        scroll_bar_right = tk.Scrollbar(top, orient='vertical')
-        scroll_bar_right.pack(side='right', fill='y')
+#         scroll_bar_right = tk.Scrollbar(top, orient='vertical')
+#         scroll_bar_right.pack(side='right', fill='y')
 
-        scroll_bar_bottom = tk.Scrollbar(top, orient='horizontal')
-        scroll_bar_bottom.pack(side='bottom', fill='x')
+#         scroll_bar_bottom = tk.Scrollbar(top, orient='horizontal')
+#         scroll_bar_bottom.pack(side='bottom', fill='x')
 
-        # if window_width * img_height < window_height * img_width:
-        # # if img_height > window_height or img_width > window_width:
-        #     # img_width = img_width//2
-        #     new_img_width = max(1, img_width * window_height // img_height)
-        #     # with preserving aspect ratio
-        #     # img_height = img_height//2
-        #     new_img_height = max(1, img_height * window_width // img_width)
+#         # if window_width * img_height < window_height * img_width:
+#         # # if img_height > window_height or img_width > window_width:
+#         #     # img_width = img_width//2
+#         #     img_width = max(1, img_width * window_height // img_height)
+#         #     # with preserving aspect ratio
+#         #     # img_height = img_height//2
+#         #     img_height = max(1, img_height * window_width // img_width)
 
-        # else:
-        #     new_img_width = img_width
-        #     new_img_height = img_height
+#         # else:
+#         #     pass
+#         # window_width = img_width  # 1080 * 2
+#         # window_height = img_height  # 800 * 2
+#         # top.geometry(f'{window_width}x{window_height}')
+#             # new_img_width = img_width
+#             # new_img_height = img_height
 
         
-        # img = image.resize((image.size[0]//2, image.size[1]//2), Image.Resampling.LANCZOS)
+#         # img = image.resize((image.size[0]//2, image.size[1]//2), Image.Resampling.LANCZOS)
         
         
-        self.canvas = tk.Canvas(
-            top,
-            width=window_width,  # img_width
-            height=window_height,  # img_height
-            scrollregion=(0,0, img_width, img_height)
-            )
-        self.canvas.pack(expand=1, fill='both')
+#         self.canvas = tk.Canvas(
+#             top,
+#             width=window_width,  # img_width
+#             height=window_height,  # img_height
+#             scrollregion=(0,0, img_width, img_height)
+#             )
+#         self.canvas.pack(expand=1, fill='both')
         
-        scroll_bar_right.config(command=self.canvas.yview)
-        scroll_bar_bottom.config(command=self.canvas.xview)
+#         scroll_bar_right.config(command=self.canvas.yview)
+#         scroll_bar_bottom.config(command=self.canvas.xview)
 
-        img_tk = ImageTk.PhotoImage(img)
-        self.canvas.create_image((5, 5), image=img_tk, anchor=tk.NW)
+#         img_tk = ImageTk.PhotoImage(img)
+#         self.canvas.create_image((5, 5), image=img_tk, anchor=tk.NW)
 
-        self.rect_id = self.canvas.create_rectangle(
-            self.top_x, self.top_y,
-            self.top_x, self.top_y,
-            dash=(2, 2), fill='', outline='white')
+#         self.rect_id = self.canvas.create_rectangle(
+#             self.top_x, self.top_y,
+#             self.top_x, self.top_y,
+#             dash=(2, 2), fill='', outline='white')
         
-        self.canvas.bind('<Button-1>', self.gather_coords)
-        self.canvas.bind('<B1-Motion>', self.update_coords)
+#         self.canvas.bind('<Button-1>', self.gather_coords)
+#         self.canvas.bind('<B1-Motion>', self.update_coords)
 
-        top.mainloop()
+#         top.mainloop()
     
-    def gather_coords(self, event):
-        print(event.x, event.y)
-        self.top_x = event.x
-        self.top_y = event.y
-        # return event.x, event.y
+#     def gather_coords(self, event):
+#         print(event.x, event.y)
+#         self.top_x = event.x
+#         self.top_y = event.y
+#         # return event.x, event.y
     
-    def update_coords(self, event):
-        print(f'updated: {event.x}, {event.y}')
-        self.bot_x = event.x
-        self.bot_y = event.y
+#     def update_coords(self, event):
+#         print(f'updated: {event.x}, {event.y}')
+#         self.bot_x = event.x
+#         self.bot_y = event.y
 
-        self.canvas.coords(
-            self.rect_id, self.top_x, self.top_y, self.bot_x, self.bot_y)
+#         self.canvas.coords(
+#             self.rect_id, self.top_x, self.top_y, self.bot_x, self.bot_y)
 
-    def submit_coords(self):
-        lst_coords= []
-        lst_coords.append((self.top_x, self.top_y))
-        ls_bott = []
-        ls_bott.append((self.bot_x, self.bot_y))
-        lst_coords.update(ls_bott[-1])
-        print(lst_coords)
-        # if len(self.lst_coords) == 2:
-        #     self.update(self.lst_coords)
+#     def submit_coords(self):
+#         lst_coords= []
+#         lst_coords.append((self.top_x, self.top_y))
+#         ls_bott = []
+#         ls_bott.append((self.bot_x, self.bot_y))
+#         lst_coords.update(ls_bott[-1])
+#         print(lst_coords)
+#         # if len(self.lst_coords) == 2:
+#         #     self.update(self.lst_coords)
 
 
 class FlipImage:
