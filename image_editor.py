@@ -8,10 +8,11 @@ from tkinter import filedialog
 
 import PIL
 import requests
-from PIL import Image, ImageDraw, ImageTk
+from PIL import Image, ImageDraw, ImageOps, ImageTk
 
 from crop_image import CropImage
 from flip_image import FlipImage
+from rotate_image import RotateImage
 
 '''
 the gui:
@@ -79,7 +80,6 @@ class MainApp(tk.Tk):
 
     def image_path(self):
         OpenImageSelector(self.image_open)
-        # OpenPathImage(self.image_open)
     
     def image_open(self, file_path):
 
@@ -150,10 +150,18 @@ class MainApp(tk.Tk):
 
     def flip_image(self, update):
         if update['vertical']:
-            img = self.image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+            img = ImageOps.flip(self.image)
+            # img = self.image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
         if update['horizont']:
-            img = self.image.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+            img = ImageOps.mirror(self.image)
+            # img = self.image.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
         self.display_image(img)
+    
+    def image_rotate(self):
+        RotateImage(self.rotate_image)
+    
+    def rotate_image(self, update):
+        print(update)
 
     
     def widgets(self):
@@ -255,7 +263,7 @@ class MainApp(tk.Tk):
             comm=lambda: [self.image_flip(), self.edit_button_field.destroy()])  # edit_flip = 
         e_buttons(
             x_=6, y_=70, width_=85, txt='Rotate', 
-            comm=lambda: [self.fake(), self.edit_button_field.destroy()])  # edit_rotate = 
+            comm=lambda: [self.image_rotate(), self.edit_button_field.destroy()])  # edit_rotate = 
         e_buttons(
             x_=6, y_=100, width_=85, txt='Resize', 
             comm=lambda: [self.fake(), self.edit_button_field.destroy()])  # edit_resize = 
@@ -644,14 +652,6 @@ class OpenUrlImage:
 #         print(lst_coords)
 #         # if len(self.lst_coords) == 2:
 #         #     self.update(self.lst_coords)
-
-
-class RotateImage:
-    def __init__(self, update):
-        top = tk.Toplevel()
-        top.title('Rotate image')
-        top.geometry('400x400')
-        self.update = update
 
 
 class ResizeImage:
