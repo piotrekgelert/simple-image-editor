@@ -11,6 +11,7 @@ import requests
 from PIL import Image, ImageDraw, ImageTk
 
 from crop_image import CropImage
+from flip_image import FlipImage
 
 '''
 the gui:
@@ -132,18 +133,27 @@ class MainApp(tk.Tk):
     def crop_image(self, update):
         im_copy = self.image.copy()
         cancel, left, upper, right, lower = update
-        print(update)
+        # print(update)
         if cancel:
             self.image = im_copy
             self.display_image(self.image)
         else:
-            print(self.image.height, self.image.width)
+            # print(self.image.height, self.image.width)
             img = self.image.crop((left, upper, right, lower))
             # self.dims_.clear()
             # self.dims_.append((self.image.height, self.image.width))
-            print(img.height, img.width)
+            # print(img.height, img.width)
             self.display_image(img)
-        
+    
+    def image_flip(self):
+        FlipImage(self.flip_image)
+
+    def flip_image(self, update):
+        if update['vertical']:
+            img = self.image.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+        if update['horizont']:
+            img = self.image.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+        self.display_image(img)
 
     
     def widgets(self):
@@ -242,7 +252,7 @@ class MainApp(tk.Tk):
             comm=lambda: [self.image_crop(), self.edit_button_field.destroy()])  # edit_crop = 
         e_buttons(
             x_=6, y_=40, width_=85, txt='Flip image', 
-            comm=lambda: [self.fake(), self.edit_button_field.destroy()])  # edit_flip = 
+            comm=lambda: [self.image_flip(), self.edit_button_field.destroy()])  # edit_flip = 
         e_buttons(
             x_=6, y_=70, width_=85, txt='Rotate', 
             comm=lambda: [self.fake(), self.edit_button_field.destroy()])  # edit_rotate = 
@@ -634,14 +644,6 @@ class OpenUrlImage:
 #         print(lst_coords)
 #         # if len(self.lst_coords) == 2:
 #         #     self.update(self.lst_coords)
-
-
-class FlipImage:
-    def __init__(self,update):
-        top = tk.Toplevel()
-        top.title('Flip image')
-        top.geometry('400x400')
-        self.update = update
 
 
 class RotateImage:

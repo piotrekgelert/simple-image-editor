@@ -7,7 +7,7 @@ class CropImage:
     def __init__(self, update, img):
         top = tk.Toplevel()
         top.title('Crop image')
-        top.geometry('400x100')
+        top.geometry('400x400')
         self.update = update
         self.image = img
 
@@ -64,6 +64,14 @@ class CropImage:
         )
         exit_button.pack()
         exit_button.place(x=170, y=50, width=190, height=30)  # 130 150
+
+        txt = '''
+                Primary mouse button selects the area,
+                secondary mouse button applies the chosen area
+                '''
+        text_label = tk.Label(top, text=txt, justify='left')
+        text_label.pack()
+        text_label.place(x=10, y=100)
 
     # def submit_apply(self):
     #     cancel=False
