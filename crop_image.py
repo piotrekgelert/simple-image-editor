@@ -197,4 +197,14 @@ class DimensionsImage:
         # ls_bott.append((self.bot_x, self.bot_y))
         # lst_coords.update(ls_bott[-1])
         # if len(self.lst_coords) == 2:
-        #     
+        #  
+
+
+# with preserving aspect ratio
+        #         # if window_width * img_height < window_height * img_width:
+#         # # if img_height > window_height or img_width > window_width:
+#         #     # img_width = img_width//2
+#         #     img_width = max(1, img_width * window_height // img_height)
+#         #     # with preserving aspect ratio
+#         #     # img_height = img_height//2
+#         #     img_height = max(1, img_height * window_width // img_width)

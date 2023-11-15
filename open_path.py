@@ -9,60 +9,34 @@ class OpenImageSelector:
         top.geometry('400x400')
         self.update_a = update_a
         self.update_b = update_b
-        drives = [f'{chr(x)}' for x in range(61, 91) if os.path.exists(f'{chr(x)}:\\')]
-        # print(drives)
+        drives = [
+            f'{chr(x)}' for x in range(61, 91)\
+                if os.path.exists(f'{chr(x)}:\\')]
+
         drives_label_txt = '''Choose one or more hard drives from available list: {}
         (more drives, longer search for images), 
         >> insert example: c, d, e <<'''
-        drives_label = tk.Label(
-            top,
-            text=drives_label_txt.format(drives))
-        drives_label.pack()
-        drives_label.place(x=20, y=3)
 
-        self.drives_field = tk.Entry(top)
-        self.drives_field.pack()
-        self.drives_field.place(x=20, y=60, height=25, width=360)
+        label = self.labels(top)
+        label(drives_label_txt.format(drives), 20, 3)
+        label('Insert link to the chosen folder with images', 20 , 140)
+        label('Paths to the recently opened folders', 20, 240)
 
-        drives_button = tk.Button(
-            top,
-            text='Submit hard drive(s)',
-            command=lambda: [self.submit_drive() , top.destroy()])
-        drives_button.pack()
-        drives_button.place(x=20, y=90)
-
-        folder_label = tk.Label(
-            top,
-            text='Insert link to the chosen folder with images')
-        folder_label.pack()
-        folder_label.place(x=20 , y=140)
-
-        self.folder_field = tk.Entry(top)
-        self.folder_field.pack()
-        self.folder_field.place(x=20, y=160, height=25, width=360)
-
-        folder_button = tk.Button(
-            top,
-            text= 'Submit path',
-            command=lambda: [self.submit_folder(), top.destroy()]  # , self.open_image_path()
-        )
-        folder_button.pack()
-        folder_button.place(x=20, y=190)
+        button = self.buttons(top)
+        button('Submit hard drive(s)',
+               lambda: [self.submit_drive() , top.destroy()], 20, 90)
+        button('Submit path',
+               lambda: [self.submit_folder(), top.destroy()], 20, 190)
+        button('Submit selected path',
+               lambda:[self.submit_recent(), top.destroy()], 20, 365)
         
-        resent_label = tk.Label(top, text='Paths to the recently opened folders')
-        resent_label.pack()
-        resent_label.place(x=20, y=240)
+        entry = self.entries(top)
+        self.drives_field = entry(20, 60, 360, 25)
+        self.folder_field = entry(20, 160, 360, 25)
 
         self.recent_field = tk.Listbox(top)
         self.recent_field.pack()
         self.recent_field.place(x=20, y=260, width=360, height=100)
-
-        recent_button = tk.Button(
-            top,
-            text='Submit selected path',
-            command=lambda:[self.submit_recent(), top.destroy()])
-        recent_button.pack()
-        recent_button.place(x=20, y=365)
 
         self.recent_ls = []
         with open('recent_comp_paths.txt', 'r') as f:
@@ -71,6 +45,30 @@ class OpenImageSelector:
                 self.recent_ls.insert(0, rc)
                 self.recent_field.insert(0, rc)
 
+    def buttons(self, main):
+        def f(txt, comm, x_, y_):
+            button = tk.Button(master=main, text=txt, command=comm)
+            button.pack()
+            button.place(x=x_, y=y_)
+            return button
+        return f
+    
+    def labels(self, main):
+        def f(txt, x_, y_):
+            label = tk.Label(master=main, text=txt)
+            label.pack()
+            label.place(x=x_, y=y_)
+            return label
+        return f
+    
+    def entries(self, main):
+        def f(x_, y_, width_, height_):
+            entry = tk.Entry(main)
+            entry.pack()
+            entry.place(x=x_, y=y_, width=width_, height=height_)
+            return entry
+        return f
+    
     def submit_folder(self):
         path_folder = self.folder_field.get()
         with open('recent_comp_paths.txt', 'w') as f:
