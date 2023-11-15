@@ -42,6 +42,9 @@ class OpenImageSelector:
         with open('recent_comp_paths.txt', 'r') as f:
             for recent_file in f.readlines():
                 rc = '\\'.join(recent_file.split('\\')[:-2])
+                # rr = recent_file.split('\\')[:-2]
+                # print(rr, recent_file)
+                # print(self.recent_field.get())
                 self.recent_ls.insert(0, rc)
                 self.recent_field.insert(0, rc)
 
@@ -72,7 +75,7 @@ class OpenImageSelector:
     def submit_folder(self):
         path_folder = self.folder_field.get()
         with open('recent_comp_paths.txt', 'w') as f:
-            f.write(path_folder)  #  + '\n'
+            f.write(path_folder+ '\n')  #  
         OpenPathImage(self.update_a, path_folder)
     
     def submit_drive(self):
@@ -137,6 +140,8 @@ class OpenPathImage:
     def submit(self):
         img_idx = self.imbox.curselection()[0]
         path_a = self.im_files[img_idx]
-        with open('recent_comp_paths.txt', 'a') as f:
-            f.write(path_a)  #  + '\n'
+        print(path_a)
         self.update_a(path_a)
+        with open('recent_comp_paths.txt', 'a') as f:
+            f.write('\n' + path_a)  #  
+        
