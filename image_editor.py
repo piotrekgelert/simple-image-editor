@@ -14,6 +14,7 @@ from crop_image import CropImage
 from flip_image import FlipImage
 from open_path import OpenImageSelector
 from open_url import OpenUrlImage
+from resize_image import ResizeImage
 from rotate_image import RotateImage
 
 '''
@@ -163,6 +164,13 @@ class MainApp(tk.Tk):
         RotateImage(self.rotate_image)
     
     def rotate_image(self, update):
+        img = self.image.rotate(int(update))
+        self.display_image(img)
+    
+    def image_resize(self):
+        ResizeImage(self.resize_image)
+    
+    def resize_image(self, update):
         print(update)
 
     
@@ -268,7 +276,7 @@ class MainApp(tk.Tk):
             comm=lambda: [self.image_rotate(), self.edit_button_field.destroy()])  # edit_rotate = 
         e_buttons(
             x_=6, y_=100, width_=85, txt='Resize', 
-            comm=lambda: [self.fake(), self.edit_button_field.destroy()])  # edit_resize = 
+            comm=lambda: [self.image_resize(), self.edit_button_field.destroy()])  # edit_resize = 
 
 
     def color_buttons(self):
@@ -359,14 +367,6 @@ class MainApp(tk.Tk):
     #             if f.endswith('.jpg'):
     #                 fjp.append(f)
     #     return fjp
-
-
-class ResizeImage:
-    def __init__(self, update):
-        top = tk.Toplevel()
-        top.title('Resize image')
-        top.geometry('400x400')
-        self.update = update
 
         
 
