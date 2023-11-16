@@ -3,15 +3,18 @@ import tkinter as tk
 
 class Utils:
     def buttons(self, main):
-        def f(txt, comm, x_, y_):
+        def f(txt:str, comm, x_:int, y_:int, width_:int=None, height_:int=None):
             button = tk.Button(master=main, text=txt, command=comm)
             button.pack()
-            button.place(x=x_, y=y_)
+            if (width_ and height_) is not None:
+                button.place(x=x_, y=y_, width=width_, height=height_)
+            else:
+                button.place(x=x_, y=y_)
             return button
         return f
     
     def labels(self, main):
-        def f(txt, x_, y_):
+        def f(txt:str, x_:int, y_:int):
             label = tk.Label(master=main, text=txt)
             label.pack()
             label.place(x=x_, y=y_)
@@ -19,7 +22,7 @@ class Utils:
         return f
     
     def entries(self, main):
-        def f(x_, y_, width_, height_):
+        def f(x_:int, y_:int, width_:int, height_:int):
             entry = tk.Entry(main)
             entry.pack()
             entry.place(x=x_, y=y_, width=width_, height=height_)

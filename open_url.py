@@ -1,7 +1,9 @@
 import tkinter as tk
 
+from utils import Utils
 
-class OpenUrlImage:
+
+class OpenUrlImage(Utils):
     def __init__(self, update):
         top = tk.Toplevel()
         top.title('Open image from url')
@@ -23,9 +25,8 @@ class OpenUrlImage:
         button('Open selected link',
                lambda:[self.submit_recent(), top.destroy()], 10, 260)
         
-        recent_label = tk.Label(top, text='Recent url links:')
-        recent_label.pack()
-        recent_label.place(x=10, y=110)
+        label = self.labels(top)
+        label('Recent url links:', 10, 110)
 
         self.recent_field = tk.Listbox(top)
         self.recent_field.pack()
@@ -36,19 +37,6 @@ class OpenUrlImage:
             for file in f.readlines():
                 self.recent_field.insert(tk.END, file)
                 self.recent_ls.insert(0, file)
-
-    def buttons(self, main):
-        def f(
-                txt:str, comm, x_:int, y_:int,
-                width_:int=None, height_:int=None):
-            button = tk.Button(main, text=txt, command=comm)
-            button.pack()
-            if (width_ and height_) is not None:
-                button.place(x=x_, y=y_, width=width_, height=height_)
-            else:
-                button.place(x=x_, y=y_)
-            return button
-        return f
 
     def submit(self):
         path_a = self.textfield.get()

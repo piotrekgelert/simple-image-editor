@@ -2,8 +2,10 @@ import tkinter as tk
 
 from PIL import ImageTk
 
+from utils import Utils
 
-class CropImage:
+
+class CropImage(Utils):
     def __init__(self, update, img):
         top = tk.Toplevel()
         top.title('Crop image')
@@ -39,39 +41,21 @@ class CropImage:
         # self.lower_input.pack()
         # self.lower_input.place(x=180, y=120, width=150, height=20)  # 100 120
 
-        get_dims_button = tk.Button(
-            top,
-            text='Get dimensions from image',
-            command=self.image_dims)
-        get_dims_button.pack()
-        get_dims_button.place(x=10, y=10, width=380, height=30)
-        
-        # apply_button = tk.Button(
-        #     top, text='Apply changes',
-        #     command=self.submit_apply
-        # )
-        # apply_button.pack()
-        # apply_button.place(x=10, y=150, width=100)  # 130 150
-        cancel_button = tk.Button(
-            top, text= 'Cancel',
-            command=lambda: [self.submit_cancel(), top.destroy()]
-        )
-        cancel_button.pack()
-        cancel_button.place(x=50, y=50, width=100, height=30)  # 130 150
-        exit_button = tk.Button(
-            top, text='Apply changes & Exit',
-            command=lambda:[self.submit_exit(), top.destroy()]
-        )
-        exit_button.pack()
-        exit_button.place(x=170, y=50, width=190, height=30)  # 130 150
+        button = self.buttons(top)
+        button('Get dimensions from image', self.image_dims, 10,10, 380, 30)
+        button('Cancel', lambda: [self.submit_cancel(), top.destroy()],
+               50, 50, 100, 30)
+        button('Apply changes & Exit', lambda: [self.submit_exit(), top.destroy()],
+               170, 50, 190, 30)
+    
 
         txt = '''
                 Primary mouse button selects the area,
                 secondary mouse button applies the chosen area
                 '''
-        text_label = tk.Label(top, text=txt, justify='left')
-        text_label.pack()
-        text_label.place(x=10, y=100)
+        label = self.labels(top)
+        label(txt, 10, 100)
+
 
     # def submit_apply(self):
     #     cancel=False
