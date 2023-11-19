@@ -9,6 +9,7 @@ from tkinter import filedialog
 import PIL
 import requests
 from PIL import Image, ImageDraw, ImageOps, ImageTk
+from PIL.Image import Resampling
 
 from crop_image import CropImage
 from flip_image import FlipImage
@@ -36,6 +37,14 @@ class MainApp(tk.Tk):
         self.geometry('1080x810')
         self.resizable(False, False)
         self.dims_ = []
+        self.resample_filters = {
+            'nearest': Resampling.NEAREST,
+            'box': Resampling.BOX,
+            'bilinear': Resampling.BILINEAR,
+            'hamming': Resampling.HAMMING,
+            'bicubic': Resampling.BICUBIC,
+            'lanchos': Resampling.LANCZOS
+        }
         self.recent_paths_saver()
         self.widgets()
 
@@ -171,7 +180,17 @@ class MainApp(tk.Tk):
         ResizeImage(self.resize_image)
     
     def resize_image(self, update):
-        print(update)
+        lns = len(update)
+        res_dat = {
+            2: self.image.resize(size=(update[0], update[1]))\
+                if lns == 2 else self.fake(),
+            3: self.image.resize(
+                size=(update[0], update[1]),\
+                    resample=self.resample_filters[update[2]])\
+                        if lns == 3 else self.fake()
+            }
+        img = res_dat.get(lns)
+        self.display_image(img)
 
     
     def widgets(self):

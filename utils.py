@@ -28,3 +28,11 @@ class Utils:
             entry.place(x=x_, y=y_, width=width_, height=height_)
             return entry
         return f
+    
+    def frames(self, main):
+        def f(x_, y_, width_, height_):
+            fr = tk.Frame(main)
+            fr.pack()
+            fr.place(x=x_, y=y_, width=width_, height=height_)
+            return fr
+        return f
