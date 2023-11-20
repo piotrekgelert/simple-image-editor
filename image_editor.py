@@ -11,6 +11,7 @@ import requests
 from PIL import Image, ImageDraw, ImageOps, ImageTk
 from PIL.Image import Resampling
 
+from color_balance import ColorBalance
 from crop_image import CropImage
 from flip_image import FlipImage
 from open_path import OpenImageSelector
@@ -202,10 +203,16 @@ class MainApp(tk.Tk):
         if window_width * img_height < window_height * img_width:
             img_width = max(1, img_width * window_height // img_height)
             img_height = max(1, img_height * window_width // img_width)
-            img = img.resize((img_width, img_height), Image.Resampling.LANCZOS)
+            img = img.resize((img_width, img_height), self.resample_filters['lanchos'])  # Resampling.LANCZOS
         else:
             pass
         return img
+    
+    def color_balance(self):
+        ColorBalance(self.balance_color)
+    
+    def balance_color(self, update):
+        print(update)
 
     
     def widgets(self):
@@ -322,7 +329,7 @@ class MainApp(tk.Tk):
         color_buttons = self.buttons(mstr=self.color_button_field)
         color_buttons(
             x_=6, y_=10, width_=85, txt='Color Balance', 
-            comm=lambda: [self.fake(), self.color_button_field.destroy()])  # color_balance = 
+            comm=lambda: [self.color_balance(), self.color_button_field.destroy()])  # color_balance = 
         color_buttons(
             x_=6, y_=40, width_=85, txt='Contrast', 
             comm=lambda: [self.fake(), self.color_button_field.destroy()])  # color_contrast = 
