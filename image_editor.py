@@ -105,7 +105,8 @@ class MainApp(tk.Tk):
         # p = 'd:\\frankenstein_s escape\\effects\\PTModelSprite_ID106841.png'
         # self.image.open(file_path)
         # print(file_path)
-        self.image = (Image.open(file_path))
+        image = (Image.open(file_path))
+        self.image = self.resize_image_aspect_load(image)
         # self.tk_image = ImageTk.PhotoImage(self.image)
         self.dims_.clear()
         self.dims_.append((self.image.height, self.image.width))
@@ -117,8 +118,8 @@ class MainApp(tk.Tk):
     def image_open_url(self, link):
         # link = 'https://img2.joyreactor.com/pics/post/funny-pictures-dog-fluffy-6466914.jpeg'
         conn = urllib.request.urlopen(link)
-        
-        self.image = Image.open(conn)
+        image = Image.open(conn)
+        self.image = self.resize_image_aspect_load(image)
         self.dims_.clear()
         self.dims_.append((self.image.height, self.image.width))
         self.display_image(self.image)  # self.tk_image
@@ -152,8 +153,8 @@ class MainApp(tk.Tk):
         else:
             # print(self.image.height, self.image.width)
             img = self.image.crop((left, upper, right, lower))
-            # self.dims_.clear()
-            # self.dims_.append((self.image.height, self.image.width))
+            self.dims_.clear()
+            self.dims_.append((self.image.height, self.image.width))
             # print(img.height, img.width)
             self.display_image(img)
     
@@ -191,6 +192,20 @@ class MainApp(tk.Tk):
             }
         img = res_dat.get(lns)
         self.display_image(img)
+    
+    def resize_image_aspect_load(self, img):
+        window_width = 1080
+        window_height = 800
+        img_width = img.size[0]
+        img_height = img.size[1]
+        # with preserving aspect ratio
+        if window_width * img_height < window_height * img_width:
+            img_width = max(1, img_width * window_height // img_height)
+            img_height = max(1, img_height * window_width // img_width)
+            img = img.resize((img_width, img_height), Image.Resampling.LANCZOS)
+        else:
+            pass
+        return img
 
     
     def widgets(self):
@@ -271,8 +286,8 @@ class MainApp(tk.Tk):
             x_=6, y_=40, width_=85,txt='Open url', 
             comm=lambda: [self.url_link(), self.file_button_field.destroy()])  # file_open_url = 
         f_buttons(
-            x_=6, y_=70, width_=85, txt='Image dimentions', 
-            comm=lambda: [self.display_dimensions(), self.file_button_field.destroy()])  # file_save = 
+            x_=6, y_=70, width_=85, txt='Image test', 
+            comm=lambda: [self.fake(), self.file_button_field.destroy()])  # file_save = 
         f_buttons(
             x_=6, y_=100, width_=85, txt='Save as', 
             comm=lambda: [self.save_image_as(), self.file_button_field.destroy()])  # file_save_as = 
