@@ -8,7 +8,7 @@ from tkinter import filedialog
 
 import PIL
 import requests
-from PIL import Image, ImageDraw, ImageOps, ImageTk
+from PIL import Image, ImageDraw, ImageEnhance, ImageOps, ImageTk
 from PIL.Image import Resampling
 
 from color_balance import ColorBalance
@@ -212,7 +212,15 @@ class MainApp(tk.Tk):
         ColorBalance(self.balance_color)
     
     def balance_color(self, update):
-        print(update)
+        img = self.image.copy()
+        # cl_enhancer = ImageEnhance.Color(self.image)
+        img_cl = img.convert('L').convert('RGB')
+        cl_img = Image.blend(img_cl, img, update)
+        self.image = cl_img
+        self.display_image(self.image)
+        # # img_cl = Image.new(self.image.mode, self.image.size, 0)
+        # # self.image = img
+        # print(update)
 
     
     def widgets(self):
