@@ -8,10 +8,10 @@ from tkinter import filedialog
 
 import PIL
 import requests
-from PIL import Image, ImageDraw, ImageEnhance, ImageOps, ImageTk
+from PIL import Image, ImageDraw, ImageOps, ImageStat, ImageTk
 from PIL.Image import Resampling
 
-from color_balance import ColorBalance
+from color_filters import ColorFilters
 from crop_image import CropImage
 from flip_image import FlipImage
 from open_path import OpenImageSelector
@@ -209,18 +209,66 @@ class MainApp(tk.Tk):
         return img
     
     def color_balance(self):
-        ColorBalance(self.balance_color)
+        lab_txt = 'Adjust image color balance. \n \
+        An enhancement factor of 0.0 gives a black and white image.\n \
+        A factor of 1.0 gives the original image'
+        ColorFilters(self.balance_color, 'Color Balance', lab_txt)
     
     def balance_color(self, update):
-        img = self.image.copy()
-        # cl_enhancer = ImageEnhance.Color(self.image)
-        img_cl = img.convert('L').convert('RGB')
-        cl_img = Image.blend(img_cl, img, update)
-        self.image = cl_img
-        self.display_image(self.image)
-        # # img_cl = Image.new(self.image.mode, self.image.size, 0)
-        # # self.image = img
-        # print(update)
+        upd_val, upd = update
+        if upd_val == 1:
+            img = self.image.copy()    
+            img_cl = img.convert('L').convert('RGB')
+            cl_img = Image.blend(img_cl, img, upd)
+            self.display_image(cl_img)
+        if upd_val == 0:
+            self.image = cl_img
+            self.display_image(self.image)
+    
+    def contrast(self):
+        lab_txt = 'Adjust image contrast.\n \
+               An enhancement factor of 0.0 gives a solid grey image.\n \
+               A factor of 1.0 gives the original image.'
+        ColorFilters(self.color_contrast, 'Contrast', lab_txt)
+    
+    def color_contrast(self, update):
+        upd_val, upd = update
+        if upd_val == 1:
+            img = self.image.copy()
+            mean_ = int(ImageStat.Stat(img.convert('L')).mean[0] + 0.5)
+            img_con_ = Image.new('L', img.size, mean_).convert(img.mode)
+            img_con = Image.blend(img_con_, img, upd)
+            self.display_image(img_con)
+        if upd_val == 0:
+            self.image = img_con
+            self.display_image(self.image)
+    
+    def brightness(self):
+        lab_txt = 'Adjust image brightness.\n \
+               An enhancement factor of 0.0 gives a solid black image.\n \
+               A factor of 1.0 gives the original image.'
+        ColorFilters(self.color_brightness, 'Brightness', lab_txt)
+    
+    def color_brightness(self, update):
+        upd_val, upd = update
+        if upd_val == 1:
+            img = self.image.copy()
+            img_br_ = Image.new(img.mode, img.size, 0)
+            img_br = Image.blend(img_br_, img, upd)
+            self.display_image(img_br)
+        if upd_val == 0:
+            self.image = img_br
+            self.display_image(self.image)
+    
+    def sharpness(self):
+        lab_txt = 'An enhancement factor of 0.0 gives a blurred image.\n \
+            A factor of 1.0 gives the original image.\n \
+                A factor of 2.0 gives a sharpened image.'
+        ColorFilters(self.color_sharpness, 'Sharpness', lab_txt)
+    
+    def color_sharpness(self, update):
+        upd_val, upd = update
+        print(update)
 
     
     def widgets(self):
@@ -340,13 +388,13 @@ class MainApp(tk.Tk):
             comm=lambda: [self.color_balance(), self.color_button_field.destroy()])  # color_balance = 
         color_buttons(
             x_=6, y_=40, width_=85, txt='Contrast', 
-            comm=lambda: [self.fake(), self.color_button_field.destroy()])  # color_contrast = 
+            comm=lambda: [self.contrast(), self.color_button_field.destroy()])  # color_contrast = 
         color_buttons(
             x_=6, y_=70, width_=85, txt='Destaturate', 
             comm=lambda: [self.fake(), self.color_button_field.destroy()])  # color_COL_to_BW = 
         color_buttons(
             x_=6, y_=100, width_=85, txt='Brightness', 
-            comm=lambda: [self.fake(), self.color_button_field.destroy()])  # color_brightness = 
+            comm=lambda: [self.brightness(), self.color_button_field.destroy()])  # color_brightness = 
         color_buttons(
             x_=6, y_=130, width_=85, txt='Sharpness', 
             comm=lambda: [self.fake(), self.color_button_field.destroy()])  # color_sharpness = 
