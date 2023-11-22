@@ -4,14 +4,15 @@ import os
 import tkinter as tk
 import urllib
 from concurrent.futures import ThreadPoolExecutor
+from random import randint
 from tkinter import filedialog
 
 import PIL
 import requests
-from PIL import Image, ImageDraw, ImageOps, ImageStat, ImageTk
+from PIL import Image, ImageFilter, ImageOps, ImageStat, ImageTk
 from PIL.Image import Resampling
 
-from color_filters import ColorFilters
+from color_filters import ColorFilters, ColorSharpness
 from crop_image import CropImage
 from flip_image import FlipImage
 from open_path import OpenImageSelector
@@ -212,6 +213,7 @@ class MainApp(tk.Tk):
         lab_txt = 'Adjust image color balance. \n \
         An enhancement factor of 0.0 gives a black and white image.\n \
         A factor of 1.0 gives the original image'
+        # ClFilters(self.balance_color, 'Color Balance', lab_txt)
         ColorFilters(self.balance_color, 'Color Balance', lab_txt)
     
     def balance_color(self, update):
@@ -229,6 +231,7 @@ class MainApp(tk.Tk):
         lab_txt = 'Adjust image contrast.\n \
                An enhancement factor of 0.0 gives a solid grey image.\n \
                A factor of 1.0 gives the original image.'
+        # ClFilters(self.color_contrast, 'Contrast', lab_txt)
         ColorFilters(self.color_contrast, 'Contrast', lab_txt)
     
     def color_contrast(self, update):
@@ -247,6 +250,7 @@ class MainApp(tk.Tk):
         lab_txt = 'Adjust image brightness.\n \
                An enhancement factor of 0.0 gives a solid black image.\n \
                A factor of 1.0 gives the original image.'
+        # ClFilters(self.color_brightness, 'Brightness', lab_txt)
         ColorFilters(self.color_brightness, 'Brightness', lab_txt)
     
     def color_brightness(self, update):
@@ -259,17 +263,49 @@ class MainApp(tk.Tk):
         if upd_val == 0:
             self.image = img_br
             self.display_image(self.image)
-    
+
     def sharpness(self):
         lab_txt = 'An enhancement factor of 0.0 gives a blurred image.\n \
             A factor of 1.0 gives the original image.\n \
                 A factor of 2.0 gives a sharpened image.'
-        ColorFilters(self.color_sharpness, 'Sharpness', lab_txt)
+        ColorSharpness(self.color_sharpness, 'Sharpness', lab_txt)
     
     def color_sharpness(self, update):
         upd_val, upd = update
-        print(update)
-
+        if upd_val == 1:
+            img = self.image.copy()
+            # img_sharp_ = Image.new(img.mode, img.size, 0)
+            img_sharp_ = img.filter(ImageFilter.SMOOTH_MORE)
+            img_sharp = Image.blend(img_sharp_, img, upd)
+            self.display_image(img_sharp)
+        if upd_val == 0:
+            self.image = img_sharp
+            self.display_image(self.image)
+    
+    def noise_color(self):
+        lab_txt = 'Adjust image noise.\n \
+               An enhancement factor of 0.0 gives a solid noise.\n \
+               A factor of 1.0 gives the original image.'
+        ColorFilters(self.color_noise, 'Color noise', lab_txt)
+    
+    def color_noise(self, update):
+        upd_val, upd = update
+        
+        # create new noisy image
+        noise_img = Image.new(self.image.mode, self.image.size)
+        width, height = noise_img.size[0], noise_img.size[1]
+        for _ in range(round(width * height)):
+            noise_img.putpixel(
+                (randint(0, width-1), randint(0, height-1)),
+                (randint(0, 255), randint(0, 255), randint(0, 255))
+            )
+        if upd_val == 1:
+            img = self.image.copy()
+            img_noisy = Image.blend(noise_img, img, upd)
+            self.display_image(img_noisy)
+        if upd_val == 0:
+            self.image = img_noisy
+            self.display_image(self.image)
     
     def widgets(self):
         # buttons place
@@ -390,17 +426,17 @@ class MainApp(tk.Tk):
             x_=6, y_=40, width_=85, txt='Contrast', 
             comm=lambda: [self.contrast(), self.color_button_field.destroy()])  # color_contrast = 
         color_buttons(
-            x_=6, y_=70, width_=85, txt='Destaturate', 
-            comm=lambda: [self.fake(), self.color_button_field.destroy()])  # color_COL_to_BW = 
-        color_buttons(
-            x_=6, y_=100, width_=85, txt='Brightness', 
+            x_=6, y_=70, width_=85, txt='Brightness', 
             comm=lambda: [self.brightness(), self.color_button_field.destroy()])  # color_brightness = 
         color_buttons(
-            x_=6, y_=130, width_=85, txt='Sharpness', 
-            comm=lambda: [self.fake(), self.color_button_field.destroy()])  # color_sharpness = 
+            x_=6, y_=100, width_=85, txt='Sharpness', 
+            comm=lambda: [self.sharpness(), self.color_button_field.destroy()])  # color_sharpness = 
+        color_buttons(
+            x_=6, y_=130, width_=85, txt='Destaturate', 
+            comm=lambda: [self.fake(), self.color_button_field.destroy()])  # color_COL_to_BW = 
         color_buttons(
             x_=6, y_=160, width_=85, txt='Color Noise', 
-            comm=lambda: [self.fake(), self.color_button_field.destroy()])  # color_noise = 
+            comm=lambda: [self.noise_color(), self.color_button_field.destroy()])   # color_noise =
 
     def filter_buttons(self):
         # filter buttons place
@@ -432,79 +468,6 @@ class MainApp(tk.Tk):
         file_save = filedialog.asksaveasfile(defaultextension='.jpg')
         self.image.save(file_save)
         # SaveAs(self.save_name)
-    
-    # def save_name(self, name):
-    #     fpath = os.getcwd()
-    #     fullpath = os.path.join(fpath, name+'.jpg')
-    #     if len(name):
-    #         if name.endswith('.jpg'):
-    #             fname = name
-    #         else:
-    #             fname = name + '.jpg'
-    #     else:
-    #         fjpeg = self.find_jpeg(fpath)
-    #         if len(fjpeg):
-    #             dig = int([
-    #                 x for x in fjpeg[-1].split('.')[0] if x.isdigit() ][0])
-    #             fname = f'image{dig+1}.jpg'
-    #         else:
-    #             fname = 'image1.jpg'
-    #     print(fname)
-
-
-            
-
-
-        # print(fullpath)
-    
-    # def find_jpeg(self, fp):
-    #     fjp = []
-    #     for r, d, files in os.walk(fp):
-    #         for f in files:
-    #             if f.endswith('.jpg'):
-    #                 fjp.append(f)
-    #     return fjp
-
-        
-
-
-# class SaveAs:
-#     def __init__(self, update):
-#         top = tk.Toplevel()
-#         top.title('Save as')
-#         top.geometry('400x200')
-#         self.update = update
-        
-#         sframe = tk.Frame(top)  # , background='brown'
-#         sframe.pack(expand=True, fill='both')
-#         sframe.place(relx=0.03, rely=0.1, relwidth=0.92, relheight=0.85)
-
-#         slabel_txt = '''If textfield will be empty saved file
-#         will be named: "image1, image2, ..."'''
-#         slabel = tk.Label(sframe, text=slabel_txt, font=('arial', 12))
-#         slabel.pack()
-#         slabel.place(relx=0.03, rely=0.1, relwidth=0.9, relheight=0.3)
-
-#         self.textfield = tk.Entry(
-#             sframe, font=('arial', 12)
-#         )
-#         self.textfield.pack(expand=True, fill='x')
-#         self.textfield.place(
-#             relx=0.03, rely=0.56, relwidth=0.8, relheight=0.2
-#             )
-#         self.textfield.focus()
-
-#         button = tk.Button(
-#             sframe, text='Save file',
-#             command=lambda: [self.submit(), top.destroy()]
-#         )
-#         button.pack()
-#         button.place(relx=0.25, rely=0.85, relwidth=0.55, relheight=0.15)
-
-
-#     def submit(self):
-#         self.update(self.textfield.get())
-    
 
 if __name__ == "__main__":
     app = MainApp()
