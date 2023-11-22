@@ -12,7 +12,7 @@ import requests
 from PIL import Image, ImageFilter, ImageOps, ImageStat, ImageTk
 from PIL.Image import Resampling
 
-from color_filters import ColorFilters, ColorSharpness
+from color_filters import ColorFiltersUpto1, ColorFiltersUpto2
 from crop_image import CropImage
 from flip_image import FlipImage
 from open_path import OpenImageSelector
@@ -211,10 +211,11 @@ class MainApp(tk.Tk):
     
     def color_balance(self):
         lab_txt = 'Adjust image color balance. \n \
-        An enhancement factor of 0.0 gives a black and white image.\n \
-        A factor of 1.0 gives the original image'
-        # ClFilters(self.balance_color, 'Color Balance', lab_txt)
-        ColorFilters(self.balance_color, 'Color Balance', lab_txt)
+        A factor of 0.0 gives a black and white image.\n \
+            A factor of 1.0 gives the original image.\n \
+                A factor of 2.0 gives a color vibrant image.'
+
+        ColorFiltersUpto2(self.balance_color, 'Color Balance', lab_txt)
     
     def balance_color(self, update):
         upd_val, upd = update
@@ -231,8 +232,8 @@ class MainApp(tk.Tk):
         lab_txt = 'Adjust image contrast.\n \
                An enhancement factor of 0.0 gives a solid grey image.\n \
                A factor of 1.0 gives the original image.'
-        # ClFilters(self.color_contrast, 'Contrast', lab_txt)
-        ColorFilters(self.color_contrast, 'Contrast', lab_txt)
+        ColorFiltersUpto2(self.color_contrast, 'Contrast', lab_txt)
+        # ColorFiltersUpto1(self.color_contrast, 'Contrast', lab_txt)
     
     def color_contrast(self, update):
         upd_val, upd = update
@@ -250,8 +251,7 @@ class MainApp(tk.Tk):
         lab_txt = 'Adjust image brightness.\n \
                An enhancement factor of 0.0 gives a solid black image.\n \
                A factor of 1.0 gives the original image.'
-        # ClFilters(self.color_brightness, 'Brightness', lab_txt)
-        ColorFilters(self.color_brightness, 'Brightness', lab_txt)
+        ColorFiltersUpto1(self.color_brightness, 'Brightness', lab_txt)
     
     def color_brightness(self, update):
         upd_val, upd = update
@@ -268,7 +268,7 @@ class MainApp(tk.Tk):
         lab_txt = 'An enhancement factor of 0.0 gives a blurred image.\n \
             A factor of 1.0 gives the original image.\n \
                 A factor of 2.0 gives a sharpened image.'
-        ColorSharpness(self.color_sharpness, 'Sharpness', lab_txt)
+        ColorFiltersUpto2(self.color_sharpness, 'Sharpness', lab_txt)
     
     def color_sharpness(self, update):
         upd_val, upd = update
@@ -283,10 +283,10 @@ class MainApp(tk.Tk):
             self.display_image(self.image)
     
     def noise_color(self):
-        lab_txt = 'Adjust image noise.\n \
+        lab_txt = 'Adjust image noise.(Slow)\n \
                An enhancement factor of 0.0 gives a solid noise.\n \
                A factor of 1.0 gives the original image.'
-        ColorFilters(self.color_noise, 'Color noise', lab_txt)
+        ColorFiltersUpto1(self.color_noise, 'Color noise', lab_txt)
     
     def color_noise(self, update):
         upd_val, upd = update
@@ -307,6 +307,23 @@ class MainApp(tk.Tk):
             self.image = img_noisy
             self.display_image(self.image)
     
+    def color_desaturate(self):
+        lab_txt = 'Adjust image color balance. \n \
+        An enhancement factor of 0.0 gives a black and white image.\n \
+        A factor of 1.0 gives the original image'
+        ColorFiltersUpto1(self.desaturate_color, 'Desaturate color', lab_txt)
+    
+    def desaturate_color(self, update):
+        upd_val, upd = update
+        if upd_val == 1:
+            img = self.image.copy()    
+            img_cl = img.convert('L').convert('RGB')
+            cl_img = Image.blend(img_cl, img, upd)
+            self.display_image(cl_img)
+        if upd_val == 0:
+            self.image = cl_img
+            self.display_image(self.image)
+
     def widgets(self):
         # buttons place
         self.button_field = self.buttons_placement_field()
@@ -433,7 +450,7 @@ class MainApp(tk.Tk):
             comm=lambda: [self.sharpness(), self.color_button_field.destroy()])  # color_sharpness = 
         color_buttons(
             x_=6, y_=130, width_=85, txt='Destaturate', 
-            comm=lambda: [self.fake(), self.color_button_field.destroy()])  # color_COL_to_BW = 
+            comm=lambda: [self.color_desaturate(), self.color_button_field.destroy()])  # color_COL_to_BW = 
         color_buttons(
             x_=6, y_=160, width_=85, txt='Color Noise', 
             comm=lambda: [self.noise_color(), self.color_button_field.destroy()])   # color_noise =

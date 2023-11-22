@@ -10,7 +10,7 @@ import tkinter as tk
 from utils import Utils
 
 
-class ColorFilters(Utils):
+class ColorFiltersUpto1(Utils):
     def __init__(self, update, tiltle, label_txt):
         top = tk.Toplevel()
         top.title(tiltle)
@@ -49,7 +49,7 @@ class ColorFilters(Utils):
         self.update([self.upd_val])
 
 
-class ColorSharpness(Utils):
+class ColorFiltersUpto2(Utils):
     def __init__(self, update, tiltle, label_txt):
         top = tk.Toplevel()
         top.title(tiltle)
@@ -58,7 +58,7 @@ class ColorSharpness(Utils):
         self.upd_val = 1
 
         label = self.labels(top)
-        label(label_txt, 10, 25)
+        label(label_txt, 10, 15)
         
         self.slider = tk.Scale(
             top, from_= 0.0, to=2.0,
