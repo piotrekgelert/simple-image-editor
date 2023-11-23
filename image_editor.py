@@ -12,6 +12,7 @@ import requests
 from PIL import Image, ImageFilter, ImageOps, ImageStat, ImageTk
 from PIL.Image import Resampling
 
+from app_buttons import AppButtons
 from color_filters import ColorFiltersUpto1, ColorFiltersUpto2
 from crop_image import CropImage
 from flip_image import FlipImage
@@ -32,7 +33,7 @@ SLIDERS AREA: [save to image butt(closes slider), ]
 '''
 
 
-class MainApp(tk.Tk):
+class MainApp(tk.Tk, AppButtons):
     def __init__(self):
         super().__init__()
         self.title('Image Editor')
@@ -60,37 +61,6 @@ class MainApp(tk.Tk):
             f_url.close()
         else:
             pass
-
-    def buttons_placement_field(self):
-        backgr = 'green'
-        filling = 'both'
-        exp = True
-        def f(x_, y_, width_, height_):  # 
-            field = tk.Frame(self, background=backgr)
-            field.pack(expand=exp, fill=filling)
-            field.place(x=x_,y=y_, width=width_, height=height_)
-            return field
-        return f
-    
-    def buttons(self, mstr=None):
-        backgr = 'dark green'
-        exp=False
-        filling ='none'
-        side_= 'left'
-        def f(x_:int, y_:int, width_:int, txt:str, comm):
-            if mstr == None:
-                button = tk.Button(
-                    master=self, text=txt, command=comm, background=backgr)
-            else:
-                button = tk.Button(
-                    master=mstr, text=txt, command=comm, background=backgr)
-            button.pack(expand=exp, fill=filling, side=side_)
-            button.place(x=x_, y=y_, width=width_)
-            return button
-        return f
-    
-    def fake(self):
-        pass
 
     def image_path(self):
         OpenImageSelector(self.image_open)
@@ -219,10 +189,10 @@ class MainApp(tk.Tk):
     
     def balance_color(self, update):
         upd_val, upd = update
-        if upd_val == 1:
-            img = self.image.copy()    
-            img_cl = img.convert('L').convert('RGB')
-            cl_img = Image.blend(img_cl, img, upd)
+        img = self.image.copy()    
+        img_cl = img.convert('L').convert('RGB')
+        cl_img = Image.blend(img_cl, img, upd)
+        if upd_val == 1:    
             self.display_image(cl_img)
         if upd_val == 0:
             self.image = cl_img
@@ -237,11 +207,11 @@ class MainApp(tk.Tk):
     
     def color_contrast(self, update):
         upd_val, upd = update
-        if upd_val == 1:
-            img = self.image.copy()
-            mean_ = int(ImageStat.Stat(img.convert('L')).mean[0] + 0.5)
-            img_con_ = Image.new('L', img.size, mean_).convert(img.mode)
-            img_con = Image.blend(img_con_, img, upd)
+        img = self.image.copy()
+        mean_ = int(ImageStat.Stat(img.convert('L')).mean[0] + 0.5)
+        img_con_ = Image.new('L', img.size, mean_).convert(img.mode)
+        img_con = Image.blend(img_con_, img, upd)
+        if upd_val == 1:    
             self.display_image(img_con)
         if upd_val == 0:
             self.image = img_con
@@ -255,10 +225,10 @@ class MainApp(tk.Tk):
     
     def color_brightness(self, update):
         upd_val, upd = update
-        if upd_val == 1:
-            img = self.image.copy()
-            img_br_ = Image.new(img.mode, img.size, 0)
-            img_br = Image.blend(img_br_, img, upd)
+        img = self.image.copy()
+        img_br_ = Image.new(img.mode, img.size, 0)
+        img_br = Image.blend(img_br_, img, upd)
+        if upd_val == 1:    
             self.display_image(img_br)
         if upd_val == 0:
             self.image = img_br
@@ -272,11 +242,11 @@ class MainApp(tk.Tk):
     
     def color_sharpness(self, update):
         upd_val, upd = update
-        if upd_val == 1:
-            img = self.image.copy()
-            # img_sharp_ = Image.new(img.mode, img.size, 0)
-            img_sharp_ = img.filter(ImageFilter.SMOOTH_MORE)
-            img_sharp = Image.blend(img_sharp_, img, upd)
+        img = self.image.copy()
+        # img_sharp_ = Image.new(img.mode, img.size, 0)
+        img_sharp_ = img.filter(ImageFilter.SMOOTH_MORE)
+        img_sharp = Image.blend(img_sharp_, img, upd)
+        if upd_val == 1:    
             self.display_image(img_sharp)
         if upd_val == 0:
             self.image = img_sharp
@@ -299,9 +269,9 @@ class MainApp(tk.Tk):
                 (randint(0, width-1), randint(0, height-1)),
                 (randint(0, 255), randint(0, 255), randint(0, 255))
             )
-        if upd_val == 1:
             img = self.image.copy()
             img_noisy = Image.blend(noise_img, img, upd)
+        if upd_val == 1:    
             self.display_image(img_noisy)
         if upd_val == 0:
             self.image = img_noisy
@@ -315,171 +285,32 @@ class MainApp(tk.Tk):
     
     def desaturate_color(self, update):
         upd_val, upd = update
-        if upd_val == 1:
-            img = self.image.copy()    
-            img_cl = img.convert('L').convert('RGB')
-            cl_img = Image.blend(img_cl, img, upd)
+        img = self.image.copy()    
+        img_cl = img.convert('L').convert('RGB')
+        cl_img = Image.blend(img_cl, img, upd)
+        if upd_val == 1:    
             self.display_image(cl_img)
         if upd_val == 0:
             self.image = cl_img
             self.display_image(self.image)
-
-    def widgets(self):
-        # buttons place
-        self.button_field = self.buttons_placement_field()
-
-        # top buttons place
-        top_button_field = self.button_field(
-            x_=30, y_=19, width_=1010, height_=40)
-
-        # top buttons
-        top_buttons = self.buttons(mstr=top_button_field)
-        top_buttons(x_=10, y_=6, width_=100, txt='File', 
-                    comm=lambda: [
-                        self.file_buttons(), 
-                        self.edit_button_field.destroy()\
-                            if hasattr(self, 'edit_button_field')\
-                                else self.fake(),
-                        self.color_button_field.destroy()\
-                            if hasattr(self, 'color_button_field')\
-                                else self.fake(),
-                        self.filter_button_field.destroy()\
-                            if hasattr(self, 'filter_button_field')\
-                                else self.fake()
-                        ])  # file = 
-        top_buttons(x_=120, y_=6, width_=100, txt='Edit', 
-                    comm=lambda: [
-                        self.edit_buttons(),
-                        self.file_button_field.destroy()\
-                            if hasattr(self, 'file_button_field')\
-                                else self.fake(),
-                        self.color_button_field.destroy()\
-                            if hasattr(self, 'color_button_field')\
-                                else self.fake(),
-                        self.filter_button_field.destroy()\
-                            if hasattr(self, 'filter_button_field')\
-                                else self.fake()
-                        ])  # edit = 
-        top_buttons(x_=230, y_=6, width_=100, txt='Colors', 
-                    comm=lambda:[
-                        self.color_buttons(),
-                        self.file_button_field.destroy()\
-                            if hasattr(self, 'file_button_field')\
-                                else self.fake(),
-                        self.edit_button_field.destroy()\
-                            if hasattr(self, 'edit_button_field')\
-                                else self.fake(),
-                        self.filter_button_field.destroy()\
-                            if hasattr(self, 'filter_button_field')\
-                                else self.fake()
-                        ])  # colors = 
-        top_buttons(x_=340, y_=6, width_=100, txt='Filters', 
-                    comm=lambda:[
-                        self.filter_buttons(),
-                        self.file_button_field.destroy()\
-                            if hasattr(self, 'file_button_field')\
-                                else self.fake(),
-                        self.edit_button_field.destroy()\
-                            if hasattr(self, 'edit_button_field')\
-                                else self.fake(),
-                        self.color_button_field.destroy()\
-                            if hasattr(self, 'color_button_field')\
-                                else self.fake()
-                        ])  # filters = 
     
-    def file_buttons(self):
-        # file buttons place
-        self.file_button_field = self.button_field(
-            x_=40, y_=60, width_=100, height_=135
-            )
-        
-        # file buttons
-        f_buttons = self.buttons(self.file_button_field)
-        f_buttons(
-            x_=6, y_=10, width_=85, txt='Open file', 
-            comm=lambda: [self.image_path(), self.file_button_field.destroy()])  # file_open = 
-        f_buttons(
-            x_=6, y_=40, width_=85,txt='Open url', 
-            comm=lambda: [self.url_link(), self.file_button_field.destroy()])  # file_open_url = 
-        f_buttons(
-            x_=6, y_=70, width_=85, txt='Image test', 
-            comm=lambda: [self.fake(), self.file_button_field.destroy()])  # file_save = 
-        f_buttons(
-            x_=6, y_=100, width_=85, txt='Save as', 
-            comm=lambda: [self.save_image_as(), self.file_button_field.destroy()])  # file_save_as = 
+    def filter_blur(self):
+        lab_txt = 'Adjust image blur. \n \
+        An enhancement factor of 0.0 gives a totally blured image.\n \
+        A factor of 1.0 gives the original image'
+        ColorFiltersUpto1(self.blur_filter, 'Blur image', lab_txt)
+    
+    def blur_filter(self, update):
+        upd_val, upd = update
+        img = self.image.copy()
+        img_blur = img.filter(ImageFilter.BLUR)
+        blur_img = Image.blend(img_blur, img, upd)
+        if upd_val == 1:
+            self.display_image(blur_img)
+        if upd_val == 0:
+            self.image = blur_img
+            self.display_image(self.image)
 
-    def edit_buttons(self):
-        # edit buttons place
-        self.edit_button_field = self.button_field(
-            x_=150, y_=60, width_=100, height_=135)
-
-        # edit buttons
-        e_buttons = self.buttons(mstr=self.edit_button_field)
-        e_buttons(
-            x_=6, y_=10, width_=85, txt='Crop image', 
-            comm=lambda: [self.image_crop(), self.edit_button_field.destroy()])  # edit_crop = 
-        e_buttons(
-            x_=6, y_=40, width_=85, txt='Flip image', 
-            comm=lambda: [self.image_flip(), self.edit_button_field.destroy()])  # edit_flip = 
-        e_buttons(
-            x_=6, y_=70, width_=85, txt='Rotate', 
-            comm=lambda: [self.image_rotate(), self.edit_button_field.destroy()])  # edit_rotate = 
-        e_buttons(
-            x_=6, y_=100, width_=85, txt='Resize', 
-            comm=lambda: [self.image_resize(), self.edit_button_field.destroy()])  # edit_resize = 
-
-
-    def color_buttons(self):
-        # color buttons place
-        self.color_button_field = self.button_field(
-            x_=260, y_=60, width_=100, height_=195)
-
-        # color buttons
-        color_buttons = self.buttons(mstr=self.color_button_field)
-        color_buttons(
-            x_=6, y_=10, width_=85, txt='Color Balance', 
-            comm=lambda: [self.color_balance(), self.color_button_field.destroy()])  # color_balance = 
-        color_buttons(
-            x_=6, y_=40, width_=85, txt='Contrast', 
-            comm=lambda: [self.contrast(), self.color_button_field.destroy()])  # color_contrast = 
-        color_buttons(
-            x_=6, y_=70, width_=85, txt='Brightness', 
-            comm=lambda: [self.brightness(), self.color_button_field.destroy()])  # color_brightness = 
-        color_buttons(
-            x_=6, y_=100, width_=85, txt='Sharpness', 
-            comm=lambda: [self.sharpness(), self.color_button_field.destroy()])  # color_sharpness = 
-        color_buttons(
-            x_=6, y_=130, width_=85, txt='Destaturate', 
-            comm=lambda: [self.color_desaturate(), self.color_button_field.destroy()])  # color_COL_to_BW = 
-        color_buttons(
-            x_=6, y_=160, width_=85, txt='Color Noise', 
-            comm=lambda: [self.noise_color(), self.color_button_field.destroy()])   # color_noise =
-
-    def filter_buttons(self):
-        # filter buttons place
-        self.filter_button_field = self.button_field(
-            x_=370, y_=60, width_=100, height_=195)
-
-        # filter buttons
-        filter_buttons = self.buttons(mstr=self.filter_button_field)
-        filter_buttons(
-            x_=6, y_=10, width_=85, txt='Blur', 
-            comm=lambda: [self.fake(), self.filter_button_field.destroy()])  # filter_blur = 
-        filter_buttons(
-            x_=6, y_=40, width_=85, txt='Contour', 
-            comm=lambda: [self.fake(), self.filter_button_field.destroy()])  # filter_contour = 
-        filter_buttons(
-            x_=6, y_=70, width_=85, txt='Edge Enhance', 
-            comm=lambda: [self.fake(), self.filter_button_field.destroy()])  # filter_edge_enhance = 
-        filter_buttons(
-            x_=6, y_=100, width_=85, txt='Emboss', 
-            comm=lambda: [self.fake(), self.filter_button_field.destroy()])  # filter_emboss = 
-        filter_buttons(
-            x_=6, y_=130, width_=85, txt='Unsharp', 
-            comm=lambda: [self.fake(), self.filter_button_field.destroy()])  # filter_unsharp = 
-        filter_buttons(
-            x_=6, y_=160, width_=85, txt='Smooth', 
-            comm=lambda: [self.fake(), self.filter_button_field.destroy()])  # filter_smooth = 
     
     def save_image_as(self):
         file_save = filedialog.asksaveasfile(defaultextension='.jpg')
