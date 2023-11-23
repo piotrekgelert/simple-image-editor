@@ -26,7 +26,7 @@ the gui:
 BUTTONS AREA:
 Image file: [open file, open url, save, save as: jpeg, png, tiff, others],
 Edit image: [crop, flip, rotate, resize],
-Colors: [color_balance, contrast, COL_to_BW, brightness, sharpness, noise]
+Colors: [color_balance, contrast, COL_to_BW, brightness, sharpness, noise, invert]
 Filters: [blur, contour, edge_enhance, emboss, unsharp, smooth]
 IMAGE AREA:
 SLIDERS AREA: [save to image butt(closes slider), ]
@@ -39,6 +39,7 @@ class MainApp(tk.Tk, AppButtons):
         self.title('Image Editor')
         self.geometry('1080x810')
         self.resizable(False, False)
+        self.configure(background='#555555')
         self.dims_ = []
         self.resample_filters = {
             'nearest': Resampling.NEAREST,
@@ -105,12 +106,6 @@ class MainApp(tk.Tk, AppButtons):
         image_field.configure(image=im)
         image_field.image = im
 
-    # def display_dimensions(self):
-    #     DimensionsImage(self.display_dims, self.image)
-    
-    # def display_dims(self, update):
-    #     print(update)
-        # image= self.image
     
     def image_crop(self):
         CropImage(self.crop_image, self.image)
@@ -294,6 +289,23 @@ class MainApp(tk.Tk, AppButtons):
             self.image = cl_img
             self.display_image(self.image)
     
+    def color_invert(self):
+        lab_txt = 'Invert image. \n \
+            An factor of 0.0 gives a totally inverts colors in the image.\n \
+                A factor of 1.0 gives the original image'
+        ColorFiltersUpto1(self.invert_color, 'Invert image', lab_txt)
+    
+    def invert_color(self, update):
+        upd_val, upd = update
+        img = self.image.copy()
+        img_inv = ImageOps.invert(img)
+        inv_img = Image.blend(img_inv, img, upd)
+        if upd_val == 1:
+            self.display_image(inv_img)
+        if upd_val == 0:
+            self.image =  inv_img
+            self.display_image(self.image)
+    
     def filter_blur(self):
         lab_txt = 'Adjust image blur. \n \
         An enhancement factor of 0.0 gives a totally blured image.\n \
@@ -310,7 +322,40 @@ class MainApp(tk.Tk, AppButtons):
         if upd_val == 0:
             self.image = blur_img
             self.display_image(self.image)
+    
+    def filter_contour(self):
+        lab_txt = 'Find contour edges in image. \n \
+            An enhancement factor of 0.0 gives contour edges in image. \n \
+                A factor of 1.0 gives the original image.'
+        ColorFiltersUpto1(self.contour_filter, 'Edge detection', lab_txt)
 
+    def contour_filter(self, update):
+        upd_val, upd = update
+        img = self.image.copy()
+        img_cont = img.filter(ImageFilter.CONTOUR)
+        cont_img = Image.blend(img_cont, img, upd)
+        if upd_val == 1:
+            self.display_image(cont_img)
+        if upd_val == 0:
+            self.image = cont_img
+            self.display_image(self.image)
+
+    def filter_emboss(self):
+        lab_txt = 'Apply emboss in an image. \n . \
+            An enhancement factor of 0.0 gives a totally applied emboss. \n . \
+                A factor of 1.0 gives original image.'
+        ColorFiltersUpto1(self.emboss_filter, 'Apply emboss', lab_txt)
+    
+    def emboss_filter(self, update):
+        upd_val, upd = update
+        img = self.image.copy()
+        img_emb = img.filter(ImageFilter.EMBOSS)
+        emb_img = Image.blend(img_emb, img, upd)
+        if upd_val == 1:
+            self.display_image(emb_img)
+        if upd_val == 0:
+            self.image = emb_img
+            self.display_image(self.image)
     
     def save_image_as(self):
         file_save = filedialog.asksaveasfile(defaultextension='.jpg')

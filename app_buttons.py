@@ -141,7 +141,7 @@ class AppButtons:
     def color_buttons(self):
         # color buttons place
         self.color_button_field = self.button_field(
-            x_=260, y_=60, width_=100, height_=195)
+            x_=260, y_=60, width_=100, height_=225)
 
         # color buttons
         color_buttons = self.buttons(mstr=self.color_button_field)
@@ -163,6 +163,10 @@ class AppButtons:
         color_buttons(
             x_=6, y_=160, width_=85, txt='Color Noise', 
             comm=lambda: [self.noise_color(), self.color_button_field.destroy()])   # color_noise =
+        color_buttons(
+            x_=6, y_=190, width_=85, txt='Color Invert',
+            comm=lambda:[self.color_invert(), self.color_button_field.destroy()]
+        )
 
     def filter_buttons(self):
         # filter buttons place
@@ -176,13 +180,13 @@ class AppButtons:
             comm=lambda: [self.filter_blur(), self.filter_button_field.destroy()])  # filter_blur = 
         filter_buttons(
             x_=6, y_=40, width_=85, txt='Contour', 
-            comm=lambda: [self.fake(), self.filter_button_field.destroy()])  # filter_contour = 
+            comm=lambda: [self.filter_contour(), self.filter_button_field.destroy()])  # filter_contour = 
         filter_buttons(
             x_=6, y_=70, width_=85, txt='Edge Enhance', 
             comm=lambda: [self.fake(), self.filter_button_field.destroy()])  # filter_edge_enhance = 
         filter_buttons(
             x_=6, y_=100, width_=85, txt='Emboss', 
-            comm=lambda: [self.fake(), self.filter_button_field.destroy()])  # filter_emboss = 
+            comm=lambda: [self.filter_emboss(), self.filter_button_field.destroy()])  # filter_emboss = 
         filter_buttons(
             x_=6, y_=130, width_=85, txt='Unsharp', 
             comm=lambda: [self.fake(), self.filter_button_field.destroy()])  # filter_unsharp = 
