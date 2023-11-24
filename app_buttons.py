@@ -1,50 +1,23 @@
 import tkinter as tk
 
+from utils import Utils
 
-class AppButtons:
-    backgr = {'color_butt_place_field': '#777777', 'color_butt': '#555555'}
-    def buttons_placement_field(self):
-        filling = 'both'
-        exp = True
-        def f(x_:int, y_:int, width_:int, height_:int):
-            field = tk.Frame(
-                self, background=self.backgr['color_butt_place_field'])
-            field.pack(expand=exp, fill=filling)
-            field.place(x=x_,y=y_, width=width_, height=height_)
-            return field
-        return f
-    
-    def buttons(self, mstr=None):
-        exp=False
-        filling ='none'
-        side_= 'left'
-        def f(x_:int, y_:int, width_:int, txt:str, comm):
-            if mstr == None:
-                button = tk.Button(
-                    master=self, text=txt, command=comm, 
-                    background=self.backgr['color_butt'])
-            else:
-                button = tk.Button(
-                    master=mstr, text=txt, command=comm, 
-                    background=self.backgr['color_butt'])
-            button.pack(expand=exp, fill=filling, side=side_)
-            button.place(x=x_, y=y_, width=width_)
-            return button
-        return f
+
+class AppButtons(Utils):
     
     def fake(self):
         pass
 
     def widgets(self):
         # buttons place
-        self.button_field = self.buttons_placement_field()
+        self.button_field = self.app_buttons_placement_field()
 
         # top buttons place
         top_button_field = self.button_field(
             x_=30, y_=19, width_=1010, height_=40)
 
         # top buttons
-        top_buttons = self.buttons(mstr=top_button_field)
+        top_buttons = self.app_buttons(mstr=top_button_field)
         top_buttons(x_=10, y_=6, width_=100, txt='File', 
                     comm=lambda: [
                         self.file_buttons(), 
@@ -105,7 +78,7 @@ class AppButtons:
             )
         
         # file buttons
-        f_buttons = self.buttons(self.file_button_field)
+        f_buttons = self.app_buttons(self.file_button_field)
         f_buttons(
             x_=6, y_=10, width_=85, txt='Open file', 
             comm=lambda: [self.image_path(), self.file_button_field.destroy()])  # file_open = 
@@ -125,7 +98,7 @@ class AppButtons:
             x_=150, y_=60, width_=100, height_=135)
 
         # edit buttons
-        e_buttons = self.buttons(mstr=self.edit_button_field)
+        e_buttons = self.app_buttons(mstr=self.edit_button_field)
         e_buttons(
             x_=6, y_=10, width_=85, txt='Crop image', 
             comm=lambda: [self.image_crop(), self.edit_button_field.destroy()])  # edit_crop = 
@@ -145,7 +118,7 @@ class AppButtons:
             x_=260, y_=60, width_=100, height_=225)
 
         # color buttons
-        color_buttons = self.buttons(mstr=self.color_button_field)
+        color_buttons = self.app_buttons(mstr=self.color_button_field)
         color_buttons(
             x_=6, y_=10, width_=85, txt='Color Balance', 
             comm=lambda: [self.color_balance(), self.color_button_field.destroy()])  # color_balance = 
@@ -175,7 +148,7 @@ class AppButtons:
             x_=370, y_=60, width_=100, height_=195)
 
         # filter buttons
-        filter_buttons = self.buttons(mstr=self.filter_button_field)
+        filter_buttons = self.app_buttons(mstr=self.filter_button_field)
         filter_buttons(
             x_=6, y_=10, width_=85, txt='Blur', 
             comm=lambda: [self.filter_blur(), self.filter_button_field.destroy()])  # filter_blur = 

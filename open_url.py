@@ -5,19 +5,18 @@ from utils import Utils
 
 class OpenUrlImage(Utils):
     def __init__(self, update):
-        top = tk.Toplevel()
+        top = tk.Toplevel(
+            background=self.app_colors()['color_butt_place_field'])
         top.title('Open image from url')
         top.geometry('400x300')
         self.update = update
 
-        ulabel = tk.Label(top, text='Insert link url:')  # , font=('arial', 12)
-        ulabel.pack()
-        ulabel.place(x=10, y=5)  # , width=370, height=0.3
-
-        self.textfield = tk.Entry(top)  # , font=('arial', 12)
-        self.textfield.pack(expand=True, fill='x')
-        self.textfield.place(x=10, y=26, width=350, height=25)  # 
-        self.textfield.focus()
+        label = self.labels(top)
+        label('Insert link url:', 10, 5)
+        label('Recent url links:', 10, 110)
+        
+        txtfield = self.entries(top)
+        self.textfield = txtfield(10, 26, 350, 25)
         
         button = self.buttons(top)
         button('Open link', lambda: [self.submit(), top.destroy()],
@@ -25,12 +24,8 @@ class OpenUrlImage(Utils):
         button('Open selected link',
                lambda:[self.submit_recent(), top.destroy()], 10, 260)
         
-        label = self.labels(top)
-        label('Recent url links:', 10, 110)
-
-        self.recent_field = tk.Listbox(top)
-        self.recent_field.pack()
-        self.recent_field.place(x=10, y=130, width=350, height=120)
+        lstbox = self.listboxes(top)
+        self.recent_field = lstbox(10, 130, 350, 120)
 
         self.recent_ls = []
         with open('recent_url_paths.txt', 'r') as f:

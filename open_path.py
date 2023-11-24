@@ -6,7 +6,7 @@ from utils import Utils
 
 class OpenImageSelector(Utils):
     def __init__(self , update_a, update_b= None):  #
-        top = tk.Toplevel()
+        top = tk.Toplevel(background=self.app_colors()['color_butt_place_field'])
         top.title('Select method to open the image')
         top.geometry('400x400')
         self.update_a = update_a
@@ -36,9 +36,8 @@ class OpenImageSelector(Utils):
         self.drives_field = entry(20, 60, 360, 25)
         self.folder_field = entry(20, 160, 360, 25)
 
-        self.recent_field = tk.Listbox(top)
-        self.recent_field.pack()
-        self.recent_field.place(x=20, y=260, width=360, height=100)
+        listbox = self.listboxes(top)
+        self.recent_field = listbox(20, 260, 360, 100)
 
         self.recent_ls = []
         with open('recent_comp_paths.txt', 'r') as f:
@@ -67,28 +66,25 @@ class OpenImageSelector(Utils):
         OpenPathImage(self.update_a, self.recent_ls[recent_idx])
 
 
-class OpenPathImage:
+class OpenPathImage(Utils):
     def __init__(self, update_a, update_b):
-        top = tk.Toplevel()
+        top = tk.Toplevel(
+            background=self.app_colors()['color_butt_place_field'])
         top.title('Open image from path')
         top.geometry('600x800')
         self.update_a = update_a
         self.update_b = update_b
 
-        llabel = tk.Label(
-            top, 
-            text='Paths to images (search on all avaible hard drives):')
-        llabel.pack()
-        llabel.place(x= 10, y=5)
+        label = self.labels(top)
+        label('Paths to images (search on all avaible hard drives):', 10, 5)
 
         self.imbox = tk.Listbox(top)
         self.imbox.pack()
         self.imbox.place(x=10, y=25, width=580, height=700)
 
-        imbutton = tk.Button(top, text='Load selected image path',
-                             command=lambda:[self.submit(), top.destroy()])
-        imbutton.pack()
-        imbutton.place(x=10, y=750, width=200, height=30)
+        button = self.buttons(top)
+        button('Load selected image path',
+               lambda:[self.submit(), top.destroy()], 10, 750, 200, 30)
 
         # avaible_hard_drives = [f'{chr(x)}:\\' for x in range(61, 91)\
         #                        if os.path.exists(f'{chr(x)}')]
@@ -96,7 +92,6 @@ class OpenPathImage:
         # with ThreadPoolExecutor(max_workers=processors_num) as proc:
         #     self.im_files = proc.map(self.find_images(avaible_hard_drives))
         
-        # print(self.update_b)
         if '\\' in self.update_b:
             self.im_files = self.find_images([self.update_b])
         else:

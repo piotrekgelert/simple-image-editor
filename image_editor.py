@@ -97,7 +97,6 @@ class MainApp(tk.Tk, AppButtons):
         self.dims_.append((self.image.height, self.image.width))
         self.display_image(self.image)  # self.tk_image
         
-    
     def display_image(self, img):
         im = ImageTk.PhotoImage(img)
         image_field = tk.Label(self)  # , background='red'
@@ -106,7 +105,6 @@ class MainApp(tk.Tk, AppButtons):
         image_field.configure(image=im)
         image_field.image = im
 
-    
     def image_crop(self):
         CropImage(self.crop_image, self.image)
     

@@ -12,7 +12,8 @@ from utils import Utils
 
 class ColorFiltersUpto1(Utils):
     def __init__(self, update, tiltle, label_txt):
-        top = tk.Toplevel()
+        top = tk.Toplevel(
+            background=self.app_colors()['color_butt_place_field'])
         top.title(tiltle)
         top.geometry('400x200')
         self.update = update
@@ -22,7 +23,8 @@ class ColorFiltersUpto1(Utils):
         label(label_txt, 10, 25)
         
         self.slider = tk.Scale(
-            top, from_= 0.0, to=1.0,
+            top, background=self.app_colors()['color_butt_place_field'],
+            from_= 0.0, to=1.0,
             tickinterval=1, resolution=0.01, length=370,
             orient='horizontal')
         self.slider.pack()
@@ -52,7 +54,8 @@ class ColorFiltersUpto1(Utils):
 
 class ColorFiltersUpto2(Utils):
     def __init__(self, update, tiltle, label_txt):
-        top = tk.Toplevel()
+        top = tk.Toplevel(
+            background=self.app_colors()['color_butt_place_field'])
         top.title(tiltle)
         top.geometry('400x200')
         self.update = update
@@ -62,7 +65,9 @@ class ColorFiltersUpto2(Utils):
         label(label_txt, 10, 15)
         
         self.slider = tk.Scale(
-            top, from_= 0.0, to=2.0,
+            top, 
+            background=self.app_colors()['color_butt_place_field'],
+            from_= 0.0, to=2.0,
             tickinterval=1, resolution=0.01, length=370,
             orient='horizontal')
         self.slider.pack()
