@@ -2,30 +2,31 @@ import tkinter as tk
 
 
 class AppButtons:
-
+    backgr = {'color_butt_place_field': '#777777', 'color_butt': '#555555'}
     def buttons_placement_field(self):
-        backgr = '#777777'  # 'green'
         filling = 'both'
         exp = True
-        def f(x_:int, y_:int, width_:int, height_:int):  # 
-            field = tk.Frame(self, background=backgr)
+        def f(x_:int, y_:int, width_:int, height_:int):
+            field = tk.Frame(
+                self, background=self.backgr['color_butt_place_field'])
             field.pack(expand=exp, fill=filling)
             field.place(x=x_,y=y_, width=width_, height=height_)
             return field
         return f
     
     def buttons(self, mstr=None):
-        backgr = '#555555'  # 'dark green'
         exp=False
         filling ='none'
         side_= 'left'
         def f(x_:int, y_:int, width_:int, txt:str, comm):
             if mstr == None:
                 button = tk.Button(
-                    master=self, text=txt, command=comm, background=backgr)
+                    master=self, text=txt, command=comm, 
+                    background=self.backgr['color_butt'])
             else:
                 button = tk.Button(
-                    master=mstr, text=txt, command=comm, background=backgr)
+                    master=mstr, text=txt, command=comm, 
+                    background=self.backgr['color_butt'])
             button.pack(expand=exp, fill=filling, side=side_)
             button.place(x=x_, y=y_, width=width_)
             return button
@@ -182,14 +183,14 @@ class AppButtons:
             x_=6, y_=40, width_=85, txt='Contour', 
             comm=lambda: [self.filter_contour(), self.filter_button_field.destroy()])  # filter_contour = 
         filter_buttons(
-            x_=6, y_=70, width_=85, txt='Edge Enhance', 
-            comm=lambda: [self.fake(), self.filter_button_field.destroy()])  # filter_edge_enhance = 
+            x_=6, y_=70, width_=85, txt='Detail', 
+            comm=lambda: [self.filter_detail(), self.filter_button_field.destroy()])  # filter_edge_enhance = 
         filter_buttons(
             x_=6, y_=100, width_=85, txt='Emboss', 
             comm=lambda: [self.filter_emboss(), self.filter_button_field.destroy()])  # filter_emboss = 
         filter_buttons(
-            x_=6, y_=130, width_=85, txt='Unsharp', 
-            comm=lambda: [self.fake(), self.filter_button_field.destroy()])  # filter_unsharp = 
+            x_=6, y_=130, width_=85, txt='Smooth', 
+            comm=lambda: [self.filter_smooth(), self.filter_button_field.destroy()])  # filter_unsharp = 
         filter_buttons(
-            x_=6, y_=160, width_=85, txt='Smooth', 
-            comm=lambda: [self.fake(), self.filter_button_field.destroy()])  # filter_smooth = 
+            x_=6, y_=160, width_=85, txt='Edges', 
+            comm=lambda: [self.filter_edges(), self.filter_button_field.destroy()])  # filter_smooth = 

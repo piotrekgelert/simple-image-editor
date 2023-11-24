@@ -36,7 +36,7 @@ SLIDERS AREA: [save to image butt(closes slider), ]
 class MainApp(tk.Tk, AppButtons):
     def __init__(self):
         super().__init__()
-        self.title('Image Editor')
+        self.title('Simple Image Editor')
         self.geometry('1080x810')
         self.resizable(False, False)
         self.configure(background='#555555')
@@ -341,7 +341,7 @@ class MainApp(tk.Tk, AppButtons):
             self.display_image(self.image)
 
     def filter_emboss(self):
-        lab_txt = 'Apply emboss in an image. \n . \
+        lab_txt = 'Apply emboss to the image. \n . \
             An enhancement factor of 0.0 gives a totally applied emboss. \n . \
                 A factor of 1.0 gives original image.'
         ColorFiltersUpto1(self.emboss_filter, 'Apply emboss', lab_txt)
@@ -357,6 +357,57 @@ class MainApp(tk.Tk, AppButtons):
             self.image = emb_img
             self.display_image(self.image)
     
+    def filter_detail(self):
+        lab_txt = 'Apply detail to the image. \n . \
+            An enhancement factor of 0.0 gives a totally applied detail. \n . \
+                A factor of 1.0 gives original image.'
+        ColorFiltersUpto1(self.detail_filter, 'Apply Detail', lab_txt)
+    
+    def detail_filter(self, update):
+        upd_val, upd = update
+        img = self.image.copy()
+        img_det = img.filter(ImageFilter.DETAIL)
+        det_img = Image.blend(img_det, img, upd)
+        if upd_val == 1:
+            self.display_image(det_img)
+        if upd_val == 0:
+            self.image = det_img
+            self.display_image(self.image)
+
+    def filter_edges(self):
+        lab_txt = 'Find edges in the image. \n . \
+            An enhancement factor of 0.0 gives edges black image. \n . \
+                A factor of 1.0 gives original image.'
+        ColorFiltersUpto1(self.edges_filter, 'Find edges', lab_txt)
+
+    def edges_filter(self, update):
+        upd_val, upd = update
+        img = self.image.copy()
+        img_edg = img.filter(ImageFilter.FIND_EDGES)
+        edg_img = Image.blend(img_edg, img, upd)
+        if upd_val == 1:
+            self.display_image(edg_img)
+        if upd_val == 0:
+            self.image = edg_img
+            self.display_image(self.image)
+    
+    def filter_smooth(self):
+        lab_txt = 'Smooth the image. \n . \
+            An enhancement factor of 0.0 gives smoother image. \n . \
+                A factor of 1.0 gives original image.'
+        ColorFiltersUpto1(self.smooth_filter, 'Smooth', lab_txt)
+    
+    def smooth_filter(self, update):
+        upd_val, upd = update
+        img = self.image.copy()
+        img_sm = img.filter(ImageFilter.SMOOTH)
+        sm_img = Image.blend(img_sm, img, upd)
+        if upd_val == 1:
+            self.display_image()
+        if upd_val == 0:
+            self.image = sm_img
+            self.display_image(self.image)
+
     def save_image_as(self):
         file_save = filedialog.asksaveasfile(defaultextension='.jpg')
         self.image.save(file_save)
