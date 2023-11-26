@@ -7,47 +7,20 @@ from utils import Utils
 
 class CropImage(Utils):
     def __init__(self, update, img):
-        top = tk.Toplevel()
+        top = tk.Toplevel(
+            background=self.app_colors()['color_butt_place_field'])
         top.title('Crop image')
-        top.geometry('400x400')
+        top.geometry('400x200')
         self.update = update
         self.image = img
-
-        # left_txt = tk.Label(top,text='Old left edge to the new left:')
-        # left_txt.pack()
-        # left_txt.place(x=10, y=50)  # 30 50
-        # self.left_input = tk.Entry(top)
-        # self.left_input.pack()
-        # self.left_input.place(x=10, y=80, width=150, height=20)  # 50 80
-
-        # upper_txt = tk.Label(top,text='Old top edge to the new top:')
-        # upper_txt.pack()
-        # upper_txt.place(x=180, y=50)  # 30 50
-        # self.upper_input = tk.Entry(top)
-        # self.upper_input.pack()
-        # self.upper_input.place(x=180, y=80, width=150, height=20)  # 50 80
-
-        # right_txt = tk.Label(top,text='Old left edge to the new right:')
-        # right_txt.pack()
-        # right_txt.place(x=10, y=100)  # 80 100
-        # self.right_input = tk.Entry(top)
-        # self.right_input.pack()
-        # self.right_input.place(x=10, y=120, width=150, height=20)  # 100 120
-
-        # lower_txt = tk.Label(top,text='Old top edge to the new bottom:')
-        # lower_txt.pack()
-        # lower_txt.place(x=180, y=100)  # 80 100
-        # self.lower_input = tk.Entry(top)
-        # self.lower_input.pack()
-        # self.lower_input.place(x=180, y=120, width=150, height=20)  # 100 120
+        self.new_dims = []
 
         button = self.buttons(top)
-        button('Get dimensions from image', self.image_dims, 10,10, 380, 30)
+        button('Get dimensions from image', self.image_dims, 10, 10, 380, 30)
         button('Cancel', lambda: [self.submit_cancel(), top.destroy()],
                50, 50, 100, 30)
         button('Apply changes & Exit', lambda: [self.submit_exit(), top.destroy()],
                170, 50, 190, 30)
-    
 
         txt = '''
                 Primary mouse button selects the area,
@@ -55,33 +28,32 @@ class CropImage(Utils):
                 '''
         label = self.labels(top)
         label(txt, 10, 100)
-
-
-    # def submit_apply(self):
-    #     cancel=False
-    #     new_dimensions = (
-    #         cancel,
-    #         int(self.left_input.get()),
-    #         int(self.upper_input.get()),
-    #         int(self.right_input.get()),
-    #         int(self.lower_input.get())
-    #         )
-    #     self.update(new_dimensions)
     
     def submit_cancel(self):
-        cancel=True
-        new_dimensions = (cancel, 0, 0, 0, 0)
+        cancel = 1
+        apply = 0
+        new_dimensions = (apply, cancel, 0, 0, 0, 0)
         self.update(new_dimensions)
 
     def submit_exit(self):
-        pass
+        cancel = 0
+        apply = 1
+        self.new_dims.insert(0, cancel)
+        self.new_dims.insert(0, apply)
+        self.update(self.new_dims)
+
+        # print(self.new_dims)
+        # pass
 
     def image_dims(self):
         DimensionsImage(self.display_dims, self.image)
     
     def display_dims(self, updte):
-        cancel=False
+        self.new_dims.extend(updte)
+        apply = 0
+        cancel = 0
         new_dimensions = (
+            apply,
             cancel,
             updte[0],
             updte[1],
@@ -90,7 +62,7 @@ class CropImage(Utils):
             )
         self.update(new_dimensions)
         # # return updte
-        print(updte)
+        # print(updte)
 
 class DimensionsImage:
     def __init__(self, update, img):  # image

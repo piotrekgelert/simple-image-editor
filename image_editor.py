@@ -96,32 +96,29 @@ class MainApp(tk.Tk, AppButtons):
         self.dims_.clear()
         self.dims_.append((self.image.height, self.image.width))
         self.display_image(self.image)  # self.tk_image
-        
-    def display_image(self, img):
-        im = ImageTk.PhotoImage(img)
-        image_field = tk.Label(self)  # , background='red'
-        image_field.pack(expand=True, fill='both')
-        image_field.place(x=30, y=65, width=1010, height=700)
-        image_field.configure(image=im)
-        image_field.image = im
 
     def image_crop(self):
         CropImage(self.crop_image, self.image)
     
     def crop_image(self, update):
-        im_copy = self.image.copy()
-        cancel, left, upper, right, lower = update
+        im_c = self.image.copy()
+        apply, cancel, left, upper, right, lower = update
         # print(update)
-        if cancel:
-            self.image = im_copy
-            self.display_image(self.image)
-        else:
-            # print(self.image.height, self.image.width)
-            img = self.image.crop((left, upper, right, lower))
+        if (apply and cancel) == 0:
+            img = im_c.crop((left, upper, right, lower))
+            self.display_image(img)
+        if apply == 1:
+            img = im_c.crop((left, upper, right, lower))
+            self.image = img
             self.dims_.clear()
             self.dims_.append((self.image.height, self.image.width))
-            # print(img.height, img.width)
-            self.display_image(img)
+            self.display_image(self.image)
+        if cancel == 1:
+            self.dims_.clear()
+            self.dims_.append((self.image.height, self.image.width))
+            self.display_image(self.image)
+            # print(self.image.height, self.image.width)
+            
     
     def image_flip(self):
         FlipImage(self.flip_image)

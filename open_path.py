@@ -78,9 +78,8 @@ class OpenPathImage(Utils):
         label = self.labels(top)
         label('Paths to images (search on all avaible hard drives):', 10, 5)
 
-        self.imbox = tk.Listbox(top)
-        self.imbox.pack()
-        self.imbox.place(x=10, y=25, width=580, height=700)
+        lstbox = self.listboxes(top)
+        self.imbox = lstbox(10, 25, 580, 700)
 
         button = self.buttons(top)
         button('Load selected image path',
@@ -113,7 +112,6 @@ class OpenPathImage(Utils):
     def submit(self):
         img_idx = self.imbox.curselection()[0]
         path_a = self.im_files[img_idx]
-        print(path_a)
         self.update_a(path_a)
         with open('recent_comp_paths.txt', 'a') as f:
             f.write('\n' + path_a)  #  

@@ -1,5 +1,7 @@
 import tkinter as tk
 
+from PIL import ImageTk
+
 
 class Utils:
     def buttons(self, main):
@@ -82,7 +84,16 @@ class Utils:
             return lstb
         return f
 
-    
+    def display_image(self, img):
+        im = ImageTk.PhotoImage(img)
+        image_field = tk.Label(
+            self, 
+            background=self.app_colors()['color_butt_place_field'])
+        image_field.pack(expand=True, fill='both')
+        image_field.place(x=30, y=65, width=1010, height=700)
+        image_field.configure(image=im)
+        image_field.image = im
+
     def app_colors(self):
         return {
             'color_butt_place_field': '#777777', 
