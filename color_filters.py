@@ -91,4 +91,5 @@ class ColorFiltersUpto2(Utils):
     
     def apply_changes(self):
         self.upd_val = 0
-        self.update([self.upd_val])
+        val = self.slider.get()
+        self.update([self.upd_val, float(val)])

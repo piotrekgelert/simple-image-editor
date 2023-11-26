@@ -1,3 +1,5 @@
+import gc
+
 from utils import Utils
 
 
@@ -7,6 +9,7 @@ class AppButtons(Utils):
         pass
 
     def widgets(self):
+        gc.enable()
         # buttons place
         self.button_field = self.app_buttons_placement_field()
 
@@ -70,6 +73,7 @@ class AppButtons(Utils):
                         ])  # filters = 
     
     def file_buttons(self):
+        gc.enable()
         # file buttons place
         self.file_button_field = self.button_field(
             x_=40, y_=60, width_=100, height_=135
@@ -91,6 +95,7 @@ class AppButtons(Utils):
             comm=lambda: [self.save_image_as(), self.file_button_field.destroy()])  # file_save_as = 
 
     def edit_buttons(self):
+        gc.enable()
         # edit buttons place
         self.edit_button_field = self.button_field(
             x_=150, y_=60, width_=100, height_=135)
@@ -111,6 +116,7 @@ class AppButtons(Utils):
             comm=lambda: [self.image_resize(), self.edit_button_field.destroy()])  # edit_resize = 
 
     def color_buttons(self):
+        gc.enable()
         # color buttons place
         self.color_button_field = self.button_field(
             x_=260, y_=60, width_=100, height_=225)
@@ -141,6 +147,7 @@ class AppButtons(Utils):
         )
 
     def filter_buttons(self):
+        gc.enable()
         # filter buttons place
         self.filter_button_field = self.button_field(
             x_=370, y_=60, width_=100, height_=195)

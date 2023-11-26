@@ -5,7 +5,9 @@ from utils import Utils
 
 class ResizeImage(Utils):
     def __init__(self, update):
-        top = tk.Toplevel()
+        top = tk.Toplevel(
+            background=self.app_colors()['color_butt_place_field']
+        )
         top.title('Resize image')
         top.geometry('360x240')
         self.update = update
@@ -65,7 +67,9 @@ class ResizeImage(Utils):
 
 class Interpolation(Utils):
     def __init__(self, update):
-        top = tk.Toplevel()
+        top = tk.Toplevel(
+            background=self.app_colors()['color_butt_place_field']
+        )
         top.title('Interpolation')
         top.geometry('260x200')
         self.update = update
@@ -76,9 +80,8 @@ class Interpolation(Utils):
         label = self.labels(top)
         label('Resample filters:', 10, 20)
 
-        self.textbox = tk.Listbox(top)
-        self.textbox.pack()
-        self.textbox.place(x=10, y=45, width=240, height=100)
+        tbox = self.listboxes(top)
+        self.textbox = tbox(10, 45, 240, 100)
 
         for x in self.filters:
             self.textbox.insert(tk.END, x)

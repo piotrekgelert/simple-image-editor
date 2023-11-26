@@ -5,7 +5,9 @@ from utils import Utils
 
 class FlipImage(Utils):
     def __init__(self, update):
-        top = tk.Toplevel()
+        top = tk.Toplevel(
+            background=self.app_colors()['color_butt_place_field']
+        )
         top.title('Flip image')
         top.geometry('400x100')
         self.update = update

@@ -5,7 +5,9 @@ from utils import Utils
 
 class RotateImage(Utils):
     def __init__(self, update):
-        top = tk.Toplevel()
+        top = tk.Toplevel(
+            background=self.app_colors()['color_butt_place_field']
+        )
         top.title('Rotate image')
         top.geometry('400x400')
         self.update = update

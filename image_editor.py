@@ -30,6 +30,8 @@ Colors: [color_balance, contrast, COL_to_BW, brightness, sharpness, noise, inver
 Filters: [blur, contour, edge_enhance, emboss, unsharp, smooth]
 IMAGE AREA:
 SLIDERS AREA: [save to image butt(closes slider), ]
+
+ whole code is build into an .exe file through the "pyinstaller" library
 '''
 
 
