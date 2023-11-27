@@ -10,49 +10,31 @@ class SaveAs(Utils):
         top.title('Save as')
         top.geometry('400x250')
         self.update = update
+        self.file = {}
         
         label = self.labels(top)
-        label('File name (default:"image_"):', 10, 25)
-        label('Image format (default: original format): jpg, png, tiff', 10, 80)  # 75
+        label('File name (default:"image"):', 10, 25)
+        label('Image format: jpg, png, tiff (default: original format)', 10, 80)  # 75
         label('Path to save the image (default: Documents path)', 10, 135)  # 125
 
         field = self.entries(top)
-        field(10, 45, 300, 25)
-        field(10, 100, 50, 25)  # 95
-        field(10, 155, 300, 25)  # 145
+        self.file_name = field(10, 45, 300, 25)
+        self.file_extention = field(10, 100, 50, 25)  # 95
+        self.file_path = field(10, 155, 300, 25)  # 145
 
         button = self.buttons(top)
         button('Save as', top.destroy, x_=80, y_=200, width_=100, height_=25)
-        button('Cancel', top.destroy, x_=200, y_=200, width_=100, height_=25)
-
-            
-        
-        # sframe = tk.Frame(top)  # , background='brown'
-        # sframe.pack(expand=True, fill='both')
-        # sframe.place(relx=0.03, rely=0.1, relwidth=0.92, relheight=0.85)
-
-        # slabel_txt = '''If textfield will be empty saved file
-        # will be named: "image1, image2, ..."'''
-        # slabel = tk.Label(sframe, text=slabel_txt)
-        # slabel.pack()
-        # slabel.place(relx=0.03, rely=0.1, relwidth=0.9, relheight=0.3)
-
-        # self.textfield = tk.Entry(
-        #     sframe, font=('arial', 12)
-        # )
-        # self.textfield.pack(expand=True, fill='x')
-        # self.textfield.place(
-        #     relx=0.03, rely=0.56, relwidth=0.8, relheight=0.2
-        #     )
-        # self.textfield.focus()
-
-        # button = tk.Button(
-        #     sframe, text='Save file',
-        #     command=lambda: [self.submit(), top.destroy()]
-        # )
-        # button.pack()
-        # button.place(relx=0.25, rely=0.85, relwidth=0.55, relheight=0.15)
+        button('Cancel', lambda: [self.cancel(), top.destroy()], x_=200, y_=200, width_=100, height_=25)
+        button('test', self.submit, x_=320, y_=200, width_=100, height_=25)
 
 
     def submit(self):
-        self.update(self.textfield.get())
+        self.file['cancel'] = '0'
+        self.file['name'] = self.file_name.get()
+        self.file['extension'] = self.file_extention.get()
+        self.file['path'] = self.file_path.get()
+        self.update(self.file)
+    
+    def cancel(self):
+        self.file['cancel'] = '1'
+        self.update(self.file)
