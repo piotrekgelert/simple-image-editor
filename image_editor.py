@@ -20,6 +20,7 @@ from open_path import OpenImageSelector
 from open_url import OpenUrlImage
 from resize_image import ResizeImage
 from rotate_image import RotateImage
+from save_as import SaveAs
 
 '''
 the gui:
@@ -406,9 +407,29 @@ class MainApp(tk.Tk, AppButtons):
             self.display_image(self.image)
 
     def save_image_as(self):
-        file_save = filedialog.asksaveasfile(defaultextension='.jpg')
-        self.image.save(file_save)
-        # SaveAs(self.save_name)
+        # file_save = filedialog.asksaveasfile(defaultextension='.jpg')
+        # self.image.save(file_save)
+        SaveAs(self.save_name)
+    
+    def save_name(self, update):
+        print(update)
+
+        # fpath = os.getcwd()
+        # fullpath = os.path.join(fpath, name+'.jpg')
+        # if len(name):
+        #     if name.endswith('.jpg'):
+        #         fname = name
+        #     else:
+        #         fname = name + '.jpg'
+        # else:
+        #     fjpeg = self.find_jpeg(fpath)
+        #     if len(fjpeg):
+        #         dig = int([
+        #             x for x in fjpeg[-1].split('.')[0] if x.isdigit() ][0])
+        #         fname = f'image{dig+1}.jpg'
+        #     else:
+        #         fname = 'image1.jpg'
+        # print(fname)
 
 if __name__ == "__main__":
     app = MainApp()
