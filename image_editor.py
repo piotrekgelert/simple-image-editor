@@ -169,7 +169,10 @@ class MainApp(tk.Tk, AppButtons):
         if window_width * img_height < window_height * img_width:
             img_width = max(1, img_width * window_height // img_height)
             img_height = max(1, img_height * window_width // img_width)
-            img = img.resize((img_width, img_height), self.resample_filters['lanchos'])  # Resampling.LANCZOS
+            img = img.resize(
+                (img_width, img_height), 
+                self.resample_filters['lanchos']
+                )  # Resampling.LANCZOS
         else:
             pass
         return img
@@ -415,29 +418,34 @@ class MainApp(tk.Tk, AppButtons):
     
     def save_name(self, update):
         file_name = update['name'] if len(update['name']) else 'image'
-        extension = update['extension'] if len(update['extension']) else self.extension
-        path_ = update['path'] if len(update['path']) else os.path.expanduser('~\Documents')
+        extension = ''.join(['.', update['extension']])\
+            if len(update['extension']) else self.extension
+        file_path = update['path'] if len(update['path'])\
+            else os.path.expanduser('~\Documents')
 
         if update['cancel'] == '0':
-            if extension in ('jpg', 'jpeg'):
-                j, _ = self._find_image_files(path_, file_name)
-                self._name_file(j, extension, file_name)
-            if extension == 'png':
-                _, p = self._find_image_files(path_, file_name)
-                self._name_file(p, extension, file_name)
+            j, p = self._find_image_files(file_path, file_name)
+            if extension in ('.jpg', '.jpeg'):
+                self._name_file(j, extension, file_name, file_path)
+            if extension == '.png':
+                self._name_file(p, extension, file_name, file_path)
 
 
-    def _name_file(self, ls, ext, img_n):
-        print('name file: {}'.format(img_n), 'ext: {}'.format(ext))
+    def _name_file(self, ls, ext, img_n, path_):
+        # print('name file: {}'.format(img_n), 'ext: {}'.format(ext))
+        
         dir_lst = [x for x in ls if img_n in x]
         if len(dir_lst):
             digit = dir_lst[-1].split('.')[0][-1]
             if digit.isdigit():
-                print(f'{img_n}{int(digit)+1}{ext}')
+                # self.image.save(os.path.join(path_, f'{img_n}{int(digit)+1}{ext}'))
+                print(os.path.join(path_, f'{img_n}{int(digit)+1}{ext}'))
             else:
-                print(f'{img_n}1{ext}')
+                # self.image.save(os.path.join(path_, f'{img_n}1{ext}'))
+                print(os.path.join(path_, f'{img_n}1{ext}'))
         else:
-            print(f'{img_n}1.{ext}')
+            # self.image.save(os.path.join(path_, f'{img_n}1{ext}'))
+            print(os.path.join(path_, f'{img_n}1{ext}'))
     
     def _find_image_files(self, file_path, img_n):
         jpg_files = []
@@ -449,29 +457,6 @@ class MainApp(tk.Tk, AppButtons):
                 if f[-4:] == '.png':
                     png_files.append(f)
         return jpg_files, png_files
-
-
-
-
-
-        
-
-        # fpath = os.getcwd()
-        # fullpath = os.path.join(fpath, name+'.jpg')
-        # if len(name):
-        #     if name.endswith('.jpg'):
-        #         fname = name
-        #     else:
-        #         fname = name + '.jpg'
-        # else:
-        #     fjpeg = self.find_jpeg(fpath)
-        #     if len(fjpeg):
-        #         dig = int([
-        #             x for x in fjpeg[-1].split('.')[0] if x.isdigit() ][0])
-        #         fname = f'image{dig+1}.jpg'
-        #     else:
-        #         fname = 'image1.jpg'
-        # print(fname)
 
 if __name__ == "__main__":
     app = MainApp()
