@@ -19,7 +19,7 @@ class SaveAs(Utils):
 
         field = self.entries(top)
         self.file_name = field(10, 45, 300, 25)
-        self.file_extention = field(10, 100, 50, 25)  # 95
+        self.file_extension = field(10, 100, 50, 25)  # 95
         self.file_path = field(10, 155, 300, 25)  # 145
 
         button = self.buttons(top)
@@ -31,10 +31,14 @@ class SaveAs(Utils):
     def submit(self):
         self.file['cancel'] = '0'
         self.file['name'] = self.file_name.get()
-        self.file['extension'] = self.file_extention.get()
+        self.file['extension'] = self.file_extension.get()
         self.file['path'] = self.file_path.get()
         self.update(self.file)
     
     def cancel(self):
         self.file['cancel'] = '1'
         self.update(self.file)
+
+
+class NameImageFind:
+    pass

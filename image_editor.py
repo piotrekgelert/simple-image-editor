@@ -414,45 +414,40 @@ class MainApp(tk.Tk, AppButtons):
         SaveAs(self.save_name)
     
     def save_name(self, update):
-        # print(update)
-        # documents_path = os.path.expanduser('~\Documents')
-        if update['cancel'] == '0':
-            if self.extension in ('.jpg', '.jpeg'):
-                j, _ = self._find_image_files(update['path'], update['name'])
-                self._name_file(j, '.jpg')
-            if self.extension == '.png':
-                _, p = self._find_image_files(update['path'], update['name'])
-                self._name_file(p, '.png')
-            # if (update['name']\
-            #     and update['extension']\
-            #         and update['path']) == '':
-            #             if self.extension in ('.jpg', '.jpeg'):
-            #                 j, _ = self._find_image_files(documents_path)
-            #                 self._name_file(j, '.jpg')
-            #             if self.extension == '.png':
-            #                 _, p = self._find_image_files(documents_path)
-            #                 self._name_file(p, '.png')
+        file_name = update['name'] if len(update['name']) else 'image'
+        extension = update['extension'] if len(update['extension']) else self.extension
+        path_ = update['path'] if len(update['path']) else os.path.expanduser('~\Documents')
 
-    def _name_file(self, ls, ext, img_n='image'):
-        digit = [x for x in ls if img_n in x][-1].split('.')[0][-1]
-        print(digit)
-        # if digit.isdigit():
-        #     print(f'{img_n}{int(digit)+1}{ext}')
-        # else:
-        #     print(f'{img_n}1{ext}')
+        if update['cancel'] == '0':
+            if extension in ('jpg', 'jpeg'):
+                j, _ = self._find_image_files(path_, file_name)
+                self._name_file(j, extension, file_name)
+            if extension == 'png':
+                _, p = self._find_image_files(path_, file_name)
+                self._name_file(p, extension, file_name)
+
+
+    def _name_file(self, ls, ext, img_n):
+        print('name file: {}'.format(img_n), 'ext: {}'.format(ext))
+        dir_lst = [x for x in ls if img_n in x]
+        if len(dir_lst):
+            digit = dir_lst[-1].split('.')[0][-1]
+            if digit.isdigit():
+                print(f'{img_n}{int(digit)+1}{ext}')
+            else:
+                print(f'{img_n}1{ext}')
+        else:
+            print(f'{img_n}1.{ext}')
     
-    def _find_image_files(self, file_path, img_n='image'):
+    def _find_image_files(self, file_path, img_n):
         jpg_files = []
         png_files = []
-        if file_path == '':
-            file_path = os.path.expanduser('~\Documents')
         for f in os.listdir(file_path):
             if f'{img_n}' in f:
                 if f[-4:] in ('.jpg', '.jpeg'):
                     jpg_files.append(f)
                 if f[-4:] == '.png':
                     png_files.append(f)
-        # print(jpg_files, png_files)
         return jpg_files, png_files
 
 
