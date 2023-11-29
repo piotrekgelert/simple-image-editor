@@ -76,8 +76,8 @@ class AppButtons(Utils):
         gc.enable()
         # file buttons place
         self.file_button_field = self.button_field(
-            x_=40, y_=60, width_=100, height_=135
-            )
+            x_=40, y_=60, width_=100, height_=105
+            )  # , height_=135
         
         # file buttons
         f_buttons = self.app_buttons(self.file_button_field)
@@ -87,12 +87,12 @@ class AppButtons(Utils):
         f_buttons(
             x_=6, y_=40, width_=85,txt='Open url', 
             comm=lambda: [self.url_link(), self.file_button_field.destroy()])  # file_open_url = 
+        # f_buttons(
+        #     x_=6, y_=70, width_=85, txt='Image test', 
+        #     comm=lambda: [self.fake(), self.file_button_field.destroy()])  # file_save = 
         f_buttons(
-            x_=6, y_=70, width_=85, txt='Image test', 
-            comm=lambda: [self.fake(), self.file_button_field.destroy()])  # file_save = 
-        f_buttons(
-            x_=6, y_=100, width_=85, txt='Save as', 
-            comm=lambda: [self.save_image_as(), self.file_button_field.destroy()])  # file_save_as = 
+            x_=6, y_=70, width_=85, txt='Save as', 
+            comm=lambda: [self.save_image_as(), self.file_button_field.destroy()])  # file_save_as =; y=100
 
     def edit_buttons(self):
         gc.enable()

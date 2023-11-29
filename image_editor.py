@@ -7,7 +7,6 @@ from concurrent.futures import ThreadPoolExecutor
 from random import randint
 from tkinter import filedialog
 
-import PIL
 import requests
 from PIL import Image, ImageFilter, ImageOps, ImageStat, ImageTk
 from PIL.Image import Resampling
@@ -258,17 +257,18 @@ class MainApp(tk.Tk, AppButtons):
     
     def color_noise(self, update):
         upd_val, upd = update
+        img = self.image.copy()
         
         # create new noisy image
         noise_img = Image.new(self.image.mode, self.image.size)
         width, height = noise_img.size[0], noise_img.size[1]
-        for _ in range(round(width * height)):
+        multiplied_dims = round(width * height)
+        for _ in range(multiplied_dims):
             noise_img.putpixel(
                 (randint(0, width-1), randint(0, height-1)),
                 (randint(0, 255), randint(0, 255), randint(0, 255))
             )
-            img = self.image.copy()
-            img_noisy = Image.blend(noise_img, img, upd)
+        img_noisy = Image.blend(noise_img, img, upd)
         if upd_val == 1:    
             self.display_image(img_noisy)
         if upd_val == 0:
@@ -406,14 +406,12 @@ class MainApp(tk.Tk, AppButtons):
         img_sm = img.filter(ImageFilter.SMOOTH)
         sm_img = Image.blend(img_sm, img, upd)
         if upd_val == 1:
-            self.display_image()
+            self.display_image(sm_img)
         if upd_val == 0:
             self.image = sm_img
             self.display_image(self.image)
 
     def save_image_as(self):
-        # file_save = filedialog.asksaveasfile(defaultextension='.jpg')
-        # self.image.save(file_save)
         SaveAs(self.save_name)
     
     def save_name(self, update):
@@ -438,14 +436,14 @@ class MainApp(tk.Tk, AppButtons):
         if len(dir_lst):
             digit = dir_lst[-1].split('.')[0][-1]
             if digit.isdigit():
-                # self.image.save(os.path.join(path_, f'{img_n}{int(digit)+1}{ext}'))
-                print(os.path.join(path_, f'{img_n}{int(digit)+1}{ext}'))
+                self.image.save(os.path.join(path_, f'{img_n}{int(digit)+1}{ext}'))
+                # print(os.path.join(path_, f'{img_n}{int(digit)+1}{ext}'))
             else:
-                # self.image.save(os.path.join(path_, f'{img_n}1{ext}'))
-                print(os.path.join(path_, f'{img_n}1{ext}'))
+                self.image.save(os.path.join(path_, f'{img_n}1{ext}'))
+                # print(os.path.join(path_, f'{img_n}1{ext}'))
         else:
-            # self.image.save(os.path.join(path_, f'{img_n}1{ext}'))
-            print(os.path.join(path_, f'{img_n}1{ext}'))
+            self.image.save(os.path.join(path_, f'{img_n}1{ext}'))
+            # print(os.path.join(path_, f'{img_n}1{ext}'))
     
     def _find_image_files(self, file_path, img_n):
         jpg_files = []
