@@ -5,7 +5,7 @@ For demo purposes I used images from Unsplash.com.
 ## A note:
 Right after start it creates two txt files: recent_comp_paths.txt and recent_url_paths.txt to save visited places.
 Use images with dimension 1080x800 or smaller.
-All images if bigger than 1080x800 can be downsized with aspect ratio when opened (very big images don't work properly yet)
+All images if bigger than 1080x800 can be downsized with aspect ratio when opened (very big images don't work properly yet).
 
 ### UI example:
 
@@ -15,6 +15,8 @@ All images if bigger than 1080x800 can be downsized with aspect ratio when opene
 
 Photo by [Alexander Schimmeck](https://unsplash.com/@alschim?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash) 'A large waterfall with a boat in the middle of it' on Unsplash
 
+### Features
+- [o] Every command opens as independent pop-up window with possibility of movement on the entire computer screen
 
 ### Commands
 - [x] File
