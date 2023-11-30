@@ -9,8 +9,11 @@ All images if bigger than 1080x800 can be downsized with aspect ratio when opene
 
 ### UI example:
 -> link to example
+<p align="middle">
+  <img src="https://github.com/piotrekgelert/simple-image-editor/blob/master/images/waterfall.jpg" width="800"/>
+</p>
 
-Photo by [Alexander Schimmeck]("https://unsplash.com/@alschim?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash") 'A large waterfall with a boat in-the middle of it' on Unsplash
+Photo by [Alexander Schimmeck](https://unsplash.com/@alschim?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash) 'A large waterfall with a boat in-the middle of it' on Unsplash
 
   
 Photo from Unsplash
