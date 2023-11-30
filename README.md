@@ -3,20 +3,18 @@ Simple image editor is made in Python 3.87 with PIL and tkinter in object orient
 For demo purposes I used images from Unsplash.com. 
 
 ## A note:
-Right after start it creates two txt files: recent_comp_paths.txt and recent_url_paths.txt to save visited places
-Use images with dimension 1080x800 or smaller
+Right after start it creates two txt files: recent_comp_paths.txt and recent_url_paths.txt to save visited places.
+Use images with dimension 1080x800 or smaller.
 All images if bigger than 1080x800 can be downsized with aspect ratio when opened (very big images don't work properly yet)
 
 ### UI example:
--> link to example
+
 <p align="middle">
   <img src="https://github.com/piotrekgelert/simple-image-editor/blob/master/images/waterfall.jpg" width="800"/>
 </p>
 
-Photo by [Alexander Schimmeck](https://unsplash.com/@alschim?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash) 'A large waterfall with a boat in-the middle of it' on Unsplash
+Photo by [Alexander Schimmeck](https://unsplash.com/@alschim?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash) 'A large waterfall with a boat in the middle of it' on Unsplash
 
-  
-Photo from Unsplash
 
 ### Commands
 - [x] File
