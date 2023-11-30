@@ -134,14 +134,23 @@ class MainApp(tk.Tk, AppButtons):
         if update['horizont']:
             img = ImageOps.mirror(self.image)
             # img = self.image.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
-        self.display_image(img)
+        self.image = img
+        self.display_image(self.image)
     
     def image_rotate(self):
         RotateImage(self.rotate_image)
     
     def rotate_image(self, update):
-        img = self.image.rotate(int(update))
-        self.display_image(img)
+        img = self.image.copy()
+        key = [k for k, v in update.items() if v != 0][0]
+        im = img.rotate(update[key])
+        if update['cancel'] == 0:
+            self.display_image(im)
+        if update['cancel'] == 1:
+            self.display_image(self.image)
+        if update['apply'] == 1:
+            self.image = im
+            self.display_image(im)
     
     def image_resize(self):
         ResizeImage(self.resize_image)
