@@ -174,13 +174,21 @@ class MainApp(tk.Tk, AppButtons):
         img_width = img.size[0]
         img_height = img.size[1]
         # with preserving aspect ratio
-        if window_width * img_height < window_height * img_width:
-            img_width = max(1, img_width * window_height // img_height)
-            img_height = max(1, img_height * window_width // img_width)
+        if (img_height > img_width) and (img_height > window_height):
+            new_height = window_height
+            new_width = new_height * img_width // img_height
             img = img.resize(
-                (img_width, img_height), 
-                self.resample_filters['lanchos']
-                )  # Resampling.LANCZOS
+                    (new_width, new_height), 
+                    self.resample_filters['lanchos']
+                    )
+        
+        if (img_width > img_height) and (img_width > window_width):
+            new_width = window_width
+            new_height = new_width * img_height // img_width
+            img = img.resize(
+                    (new_width, new_height), 
+                    self.resample_filters['lanchos']
+                    )
         else:
             pass
         return img

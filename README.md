@@ -5,7 +5,7 @@ For demo purposes I used images from Unsplash.com.
 ## A note:
 Right after start it creates two txt files: recent_comp_paths.txt and recent_url_paths.txt to save visited places.
 Use images with dimension 1080x800 or smaller.
-All images if bigger than 1080x800 can be downsized with aspect ratio when opened (very big images don't work properly yet).
+All images if bigger than 1080x800 will be downsized with aspect ratio when opened.
 
 ### UI example:
 
